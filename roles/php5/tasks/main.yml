@@ -1,0 +1,15 @@
+- hosts: webservers
+  user: ec2-user
+  sudo: yes
+
+  tasks:
+    - name: Install Apache2
+      action: apt name=$item
+      with_items:
+        - php5
+        - libapache2-mod-php5
+        - php5-mcrypt
+    - name: Make sure info.php is present for the default virtual host
+      action: copy src=templates/info.php dest=/var/www/info.php
+    - name: Make sure info.php is owned by www-data
+      action: file path=/var/www/info.php owner=www-data group=www-data
