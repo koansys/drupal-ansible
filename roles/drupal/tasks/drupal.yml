@@ -1,0 +1,37 @@
+##
+# Drupal install
+#
+  - name: Drupal | Download drupal and place it in directory
+    sudo: no
+    action: command drush dl -y drupal --drupal-project-rename=drupal --destination=/home/ec2-user/www/
+
+  - name: Drupal | Create default setting.py file
+    action: template src=drupal-sites-default-settings-php.j2 dest=/home/ec2-user/www/drupal/sites/default/settings.php mode=0777 owner=ec2-user group=ec2-user
+
+  - name: Drupal | Make sites/default writable for site-install
+    action: file path=/home/ec2-user/www/drupal/sites/default state=directory mode=0777
+
+  - name: Drupal | Create the files directory
+    action: file path=/home/ec2-user/www/drupal/sites/default/files state=directory mode=0777 owner=ec2-user group=ec2-user
+
+  # - name: Drupal | Get drush status
+  #   action: shell cd /home/ec2-user/www/drupal && drush status | grep Successful;
+  #   ignore_errors: True
+  #   register: drush_status
+
+  # - name: Drupal | Site Install
+  #   action: shell cd /home/ec2-user/www/drupal && drush -y --db-su=root --db-su-pw=$mysql_root_password --db-url=mysql://root:$mysql_root_password@127.0.0.1/drupal $drush_si_extra_args site-install
+  #   only_if: "${drush_status.rc} != 0"
+
+  # ##
+  # # Drupal cleanup tasks
+  # #
+  # - name: Drupal Cleanup | Reset permissions on sites/default (on localhost)
+  #   local_action: file path=/home/ec2-user/www/drupal/sites/default state=directory mode=0755
+
+  # - name: Drupal Cleanup | Reset permissions on sites/default/settings.php (on localhost)
+  #   local_action: file path=/home/ec2-user/www/drupal/sites/default/settings.php state=file  mode=0644
+
+  # - name: Drush Cleanup | Delete ~/.drush, maybe it is for a wrong user
+  #   action: file path=~/.drush state=absent
+  #   tags: drush

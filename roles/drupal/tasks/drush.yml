@@ -1,0 +1,17 @@
+##
+# Drush install, a Drupal shell tool.
+#
+- name: Drush | Install PHP PEAR
+  action: apt pkg=php-pear state=installed
+
+- name: Drush | Update PEAR
+  action: command pear upgrade-all
+
+- name: Drush | Setup PEAR channel
+  action: command pear channel-discover pear.drush.org creates=/usr/share/php/.channels/pear.drush.org.reg
+
+- name: Drush | Install drush
+  action: command pear install drush/drush creates=/usr/bin/drush
+
+- name: Drush | Run drush once so it downloads it's dependencies
+  action: command drush
