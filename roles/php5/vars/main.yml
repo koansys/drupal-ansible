@@ -1,0 +1,8 @@
+# php.ini
+php_max_execution_time: '90'
+php_display_errors: 'On'
+php_display_startup_errors: 'On'
+php_html_errors: 'On'
+php_post_max_size: '32M'
+php_upload_max_filesize: '32M'
+php_date_timezone: 'US/New_York'
