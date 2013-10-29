@@ -2,6 +2,6 @@
 # Comman server tasks.
 #
 - name: Common | Update Server
-  action: command apt-get update
+  action: command apt-get update -y
 - name: Common | Upgrade Packages
-  action: command apt-get upgrade
+  action: command apt-get upgrade -y
