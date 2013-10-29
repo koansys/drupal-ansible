@@ -1,0 +1,11 @@
+- hosts: webservers
+  user: ec2-user
+  sudo: yes
+
+  tasks:
+    - name: Install Apache2
+      action: apt name=$item
+      with_items:
+        - apache2
+    - name: Start the Apache2 service
+      action: service name=httpd state=started
