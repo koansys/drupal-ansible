@@ -1,34 +1,39 @@
-- hosts: webservers
-  user: ec2-user
-  sudo: yes
+##
+# Apache2 install.
+#
+- name: Apache | Install
+  action: apt name=$item
+  with_items:
+    - apache2
+- name: Apache | Start service
+  action: service name=apache2 state=started
 
-  tasks:
+##
+# Apache2 setup.
+#
+- name: Apache | Enable some required modules
+  action: command a2enmod rewrite vhost_alias
 
-    ##
-    # Apache2 install.
-    #
-    - name: Apache | Install
-      action: apt name=$item
-      with_items:
-        - apache2
-    - name: Apache | Start service
-      action: service name=httpd state=started
+- name: Apache | Configuration file for our site
+  action: template src=etc-apache2-sites-available-server.j2 dest=/etc/apache2/sites-available/server
 
-    ##
-    # Apache2 setup.
-    #
-    - name: Apache | Enable some required modules
-      action: command a2enmod rewrite vhost_alias
-      tags: common
+- name: Apache | Disable the default site
+  action: command a2dissite default
 
-    - name: Apache | Configuration file for our site
-      action: template src=templates/etc-apache2-sites-available-server.j2 dest=/etc/apache2/sites-available/server
-      tags: common
+- name: Apache | Enable our new site
+  action: command a2ensite server
 
-    - name: Apache | Disable the default site
-      action: command a2dissite default
-      tags: common
+##
+# Creating Website Directory
+#
+- name: Apache | Create website directory
+  action: command mkdir -p /home/ec2-user/www
 
-    - name: Apache | Enable our new site
-      action: command a2ensite server
-      tags: common
+- name: Apache | Add basic index.html
+  action: copy src=index.html dest=/home/ec2-user/www/index.html
+
+##
+# Apache2 Restart
+#
+- name: Apache | Restart
+  action: service name=apache2 state=restarted
