@@ -5,8 +5,10 @@
   action: apt name=$item
   with_items:
     - php5
+    - php5-mysql
+    - php5-curl
+    - php5-gd
     - libapache2-mod-php5
-    - php5-mcrypt
   notify:
     - start apache2  ## or - start nginx
 - name: PHP5 | Add info.php to the server's virtual host
