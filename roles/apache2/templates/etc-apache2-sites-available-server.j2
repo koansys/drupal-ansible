@@ -1,0 +1,14 @@
+<VirtualHost *:80>
+        ServerAdmin {{ apache_server_admin }}
+        ServerAlias {{ apache_server_alias }}
+
+        VirtualDocumentRoot /home/%-4/www/%-3
+
+        <Directory /home/*/www/*>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+
+</VirtualHost>
