@@ -1,4 +1,8 @@
 - hosts: webservers
+  user: ec2-user
+  sudo: yes
+
   roles:
+    - common
     - apache2
     - php5
