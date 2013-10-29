@@ -1,17 +1,13 @@
-- hosts: webservers
-  user: ec2-user
-  sudo: yes
-
-  tasks:
-    - name: PHP5 | Install
-      action: apt name=$item
-      with_items:
-        - php5
-        - libapache2-mod-php5
-        - php5-mcrypt
-      notify:
-        - start apache2  ## or - start nginx
-    - name: PHP5 | Add info.php to the server's virtual host
-      action: copy src=templates/info.php dest=/home/ec2-user/www/info.php
-    - name: PHP5 | Change info.php owner to www-data
-      action: file path=/var/www/info.php owner=www-data group=www-data
+##
+# PHP5 install.
+#
+- name: PHP5 | Install
+  action: apt name=$item
+  with_items:
+    - php5
+    - libapache2-mod-php5
+    - php5-mcrypt
+  notify:
+    - start apache2  ## or - start nginx
+- name: PHP5 | Add info.php to the server's virtual host
+  action: copy src=info.php dest=/home/ec2-user/www/info.php
