@@ -22,16 +22,3 @@
   # - name: Drupal | Site Install
   #   action: shell cd /home/${username}/www/drupal && drush -y --db-su=root --db-su-pw=$mysql_root_password --db-url=mysql://root:$mysql_root_password@127.0.0.1/drupal $drush_si_extra_args site-install
   #   only_if: "${drush_status.rc} != 0"
-
-  # ##
-  # # Drupal cleanup tasks
-  # #
-  # - name: Drupal Cleanup | Reset permissions on sites/default (on localhost)
-  #   local_action: file path=/home/${username}/www/drupal/sites/default state=directory mode=0755
-
-  # - name: Drupal Cleanup | Reset permissions on sites/default/settings.php (on localhost)
-  #   local_action: file path=/home/${username}/www/drupal/sites/default/settings.php state=file  mode=0644
-
-  # - name: Drush Cleanup | Delete ~/.drush, maybe it is for a wrong user
-  #   action: file path=~/.drush state=absent
-  #   tags: drush

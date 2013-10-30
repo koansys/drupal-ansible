@@ -1,8 +1,0 @@
-##
-# Database Variables
-#
-db_name: 'drupal'
-db_username: 'drupal'
-db_password: 'password'
-db_host: 'localhost'
-db_prefix: 'main_'

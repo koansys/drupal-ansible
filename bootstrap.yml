@@ -6,7 +6,6 @@
     username: ubuntu
 
   roles:
-    # - common
     - apache2
     - php5
-    - drupal
+    - drupal-install

@@ -1,0 +1,9 @@
+##
+# Database Variables
+#
+db_name: 'default'
+db_username: 'default'
+db_password: 'default'
+db_host: 'localhost'
+db_port: 3333
+db_prefix: 'main_'
