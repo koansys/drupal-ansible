@@ -14,4 +14,4 @@
   notify:
     - start apache2  ## or - start nginx
 - name: PHP5 | Add info.php to the server's virtual host
-  action: copy src=info.php dest=/home/ec2-user/www/info.php
+  action: copy src=info.php dest=/home/${username}/www/info.php

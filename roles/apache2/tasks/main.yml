@@ -27,10 +27,10 @@
 # Creating Website Directory
 #
 - name: Apache | Create website directory
-  action: file path=/home/ec2-user/www owner=ec2-user group=ec2-user state=directory mode=0775
+  action: file path=/home/${username}/www owner=${username} group=${username} state=directory mode=0775
 
 - name: Apache | Add basic index.html
-  action: copy src=index.html dest=/home/ec2-user/www/index.html
+  action: copy src=index.html dest=/home/${username}/www/index.html
 
 ##
 # Apache2 Restart

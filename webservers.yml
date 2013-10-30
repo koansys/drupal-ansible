@@ -1,6 +1,9 @@
 - hosts: webservers
-  user: ec2-user
+  user: ubuntu
   sudo: yes
+
+  vars:
+    username: ubuntu
 
   roles:
     # - common

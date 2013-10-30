@@ -1,14 +1,14 @@
 <VirtualHost *:80>
     ServerAdmin {{ apache_server_admin }}
 
-    VirtualDocumentRoot /home/ec2-user/www
+    VirtualDocumentRoot /home/{{ username }}/www
 
     <Directory />
         Options FollowSymLinks
         AllowOverride None
     </Directory>
 
-    <Directory /home/ec2-user/www/>
+    <Directory /home/{{ username }}/www/>
         Options Indexes FollowSymLinks MultiViews
         AllowOverride All
         Order allow,deny
