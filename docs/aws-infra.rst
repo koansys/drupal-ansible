@@ -14,5 +14,6 @@ Adding CIDR blocks for our developer networks: DMI, K, V, Josh, Reed, ...
 
 12:05
 
+Creating the Instance m1.small
 
 
