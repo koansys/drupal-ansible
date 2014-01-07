@@ -1,2 +1,13 @@
 [webservers]
 127.0.0.1
+
+[gluster-brick:children]
+gluster-brick-1
+gluster-brick-2
+
+[gluster-brick-1]
+ec2-54-209-1-253.compute-1.amazonaws.com
+
+[gluster-brick-2]
+ec2-54-209-96-118.compute-1.amazonaws.com
+

@@ -1,0 +1,38 @@
+# Danger: this wipe a partition
+# I'd like to have some vars here
+# Device(rhel): xvdf (from AWS sdb)
+# Partition location: /data/glusterfs/vol1/
+
+# Naming conventions from:
+# http://www.gluster.org/community/documentation/index.php/HowTos:Brick_naming_conventions
+---
+- name: Check for existing partition
+  stat: path=/data/glusterfs/vol1
+  register: stat_vol1
+
+- name: Make filesystem on device
+  command: /sbin/mkfs.ext4 /dev/xvdf
+  when: stat_vol1.stat.exists == false
+  # RedHat: invalid inode ratio: -i size=512
+  # RedHat out of box doesn't have /sbin/mkfs.xfs so use ext4
+  # SYNTAX TEST?
+  # Is the inode option size= needed??
+
+- name: Make top dir
+  file: path=/data/glusterfs/vol1 state=directory owner=root group=root mode=0700
+  when: stat_vol1.stat.exists == false
+
+- name: Mount filesystem
+  mount: fstype=ext4 name=/data/glusterfs/vol1/brick1 src=/dev/xvdf state=mounted
+  when: stat_vol1.stat.exists == false
+
+- name: Make brick dir in filesystem
+  file: path=/data/glusterfs/vol1/brick1/brick state=directory owner=root group=root mode=0700
+  when: stat_vol1.stat.exists == false
+
+
+# - include: create-brick-redhat.yaml
+#   when: ansible_distribution == "RedHat"
+# - include: create-brick-ubuntu.yaml
+#   when: ansible_distribution == "Ubuntu"
+
