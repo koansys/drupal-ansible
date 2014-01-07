@@ -1,0 +1,11 @@
+[gluster-bricks:children]
+gluster-brick-1
+gluster-brick-2
+
+[gluster-brick-1]
+ec2-107-20-89-160.compute-1.amazonaws.com ansible_ssh_user=ec2-user
+
+[gluster-brick-2]
+ec2-50-17-108-87.compute-1.amazonaws.com  ansible_ssh_user=ec2-user
+
+
