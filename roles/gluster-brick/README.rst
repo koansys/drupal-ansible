@@ -13,3 +13,9 @@ would take a long time to synchronize with extant nodes -- simply
 copying 1TB data. So we separate replicated storage from auto-scaling
 clients.
 
+For testing, we're using Ubuntu on m1.small with 100GB added EBS on
+/dev/sdb, destroyed on termination. Both in VPC, in US-East-1b and
+-1d.
+
+
+

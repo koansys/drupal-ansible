@@ -1,4 +1,4 @@
-# Danger: this wipe a partition
+# Danger: this wipes a partition
 # I'd like to have some vars here
 # Device(rhel): xvdf (from AWS sdb)
 # Partition location: /data/glusterfs/vol1/
@@ -6,6 +6,15 @@
 # Naming conventions from:
 # http://www.gluster.org/community/documentation/index.php/HowTos:Brick_naming_conventions
 ---
+# EPEL should be elsewhere
+- name: Install EPEL RPM package
+  sudo: yes
+  yum: name="http://dl.fedoraproject.org/pub/epel/6Server/{{ ansible_architecture }}/epel-release-6-8.noarch.rpm"
+  when: ansible_distribution == 'RedHat'
+
+- name: Install XFS filesystem
+  yum: name="xfsprogs"
+  
 - name: Check for existing partition
   stat: path=/data/glusterfs/vol1
   register: stat_vol1
