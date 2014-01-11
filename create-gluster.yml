@@ -1,4 +1,4 @@
-- name: Gluster
+- name: Create Gluster
   hosts: all
   sudo: yes
   # vars:
@@ -7,5 +7,6 @@
   roles:
     - gluster-brick
   tasks:
-    - name: do nothing
-      debug: msg="HI MOM"
+    - name: Calling the brick creator...
+      debug: msg="Calling the brick creator..."
+

@@ -1,47 +1,30 @@
 # Danger: this wipes a partition
-# I'd like to have some vars here
-# Device(rhel): xvdf (from AWS sdb)
-# Partition location: /data/glusterfs/vol1/
-
+# Caution/TODO: won't work on Ubuntu
+# Note: vars obtained from inventory/group/host vars
+#
 # Naming conventions from:
 # http://www.gluster.org/community/documentation/index.php/HowTos:Brick_naming_conventions
 ---
-# EPEL should be elsewhere
-- name: Install EPEL RPM package
-  sudo: yes
-  yum: name="http://dl.fedoraproject.org/pub/epel/6Server/{{ ansible_architecture }}/epel-release-6-8.noarch.rpm"
-  when: ansible_distribution == 'RedHat'
 
-- name: Install XFS filesystem
-  yum: name="xfsprogs"
-  
 - name: Check for existing partition
-  stat: path=/data/glusterfs/vol1
+  stat: path={{gluster_vol_path}}
   register: stat_vol1
 
-- name: Make filesystem on device
-  command: /sbin/mkfs.ext4 /dev/xvdf
-  when: stat_vol1.stat.exists == false
-  # RedHat: invalid inode ratio: -i size=512
-  # RedHat out of box doesn't have /sbin/mkfs.xfs so use ext4
-  # SYNTAX TEST?
-  # Is the inode option size= needed??
+- name: Add XFS programs
+  apt: pkg=xfsprogs state=present
 
+- name: Make filesystem on device
+  command: /sbin/mkfs -t {{gluster_fs_type}} -i size=512 {{gluster_raw_device}}
+  when: stat_vol1.stat.exists == false
+ 
 - name: Make top dir
-  file: path=/data/glusterfs/vol1 state=directory owner=root group=root mode=0700
+  file: path={{gluster_vol_path}} state=directory owner=root group=root mode=0700
   when: stat_vol1.stat.exists == false
 
 - name: Mount filesystem
-  mount: fstype=ext4 name=/data/glusterfs/vol1/brick1 src=/dev/xvdf state=mounted
+  mount: fstype={{gluster_fs_type}} name={{gluster_vol_path}} src={{gluster_raw_device}} state=mounted
   when: stat_vol1.stat.exists == false
 
 - name: Make brick dir in filesystem
-  file: path=/data/glusterfs/vol1/brick1/brick state=directory owner=root group=root mode=0700
+  file: path={{gluster_vol_path}}/brick state=directory owner=root group=root mode=0700
   when: stat_vol1.stat.exists == false
-
-
-# - include: create-brick-redhat.yaml
-#   when: ansible_distribution == "RedHat"
-# - include: create-brick-ubuntu.yaml
-#   when: ansible_distribution == "Ubuntu"
-

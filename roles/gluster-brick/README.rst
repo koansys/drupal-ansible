@@ -17,5 +17,6 @@ For testing, we're using Ubuntu on m1.small with 100GB added EBS on
 /dev/sdb, destroyed on termination. Both in VPC, in US-East-1b and
 -1d.
 
+TODO: create RedHat variant, or at least check for Ubuntu and bail on non-Ubuntu.
 
 

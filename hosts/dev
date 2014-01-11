@@ -3,11 +3,13 @@ gluster-brick-1
 gluster-brick-2
 
 [gluster-bricks:vars]
-ansible_ssh_user=ec2-user
- 
+ansible_ssh_user=ubuntu
+gluster_raw_device=/dev/xvdb
+gluster_vol_path=/data/glusterfs/vol1/brick1
+gluster_fs_type=xfs
+
 [gluster-brick-1]
+ec2-54-209-236-5.compute-1.amazonaws.com
 
 [gluster-brick-2]
-ec2-54-209-245-15.compute-1.amazonaws.com
-
-
+ec2-54-236-231-87.compute-1.amazonaws.com

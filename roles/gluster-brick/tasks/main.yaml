@@ -1,5 +1,2 @@
 ---
-- name: TEST ROLE gluster-brick
-  debug: msg="I AM MAIN.YAML in gluster-brick"
-  
 - include: create-brick.yaml
