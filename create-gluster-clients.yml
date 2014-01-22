@@ -1,0 +1,14 @@
+#ansible-playbook -v -i hosts/dev -l gluster-clients create-gluster-clients.yml --user=ubuntu --private-key=~/AeroFS/AWS-keys/chriskoansys.pem
+
+- name: Gluster
+  hosts: gluster-clients
+  sudo: yes
+  # vars:
+  #   # should have redhat and size stuff here? or in group/host files?
+  #   foo: bar
+  roles:
+    - ubuntu
+    - gluster-client
+  tasks:
+    - name: do nothing
+      debug: msg="Need some task for the play to work"

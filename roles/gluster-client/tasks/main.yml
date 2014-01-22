@@ -1,0 +1,11 @@
+---
+- fail: 'Cannot add Gluster repo on non-Ubuntu yet'
+  when: ansible_distribution != 'Ubuntu'
+
+- name: Add Gluster repo
+  apt_repository: repo="deb http://ppa.launchpad.net/semiosis/ubuntu-glusterfs-3.4/ubuntu {{ansible_distribution_release}} main"
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Install Gluster client software
+  apt: pkg=glusterfs-client force=yes
+  # Need 'force' to avoid WARNING: The following packages cannot be authenticated!
