@@ -15,8 +15,8 @@
 #
 
 - name: Drupal | Download drupal modules
-  action: shell drush dl -y --destination=/home/${username}/www/drupal/sites/all/modules ${drush_download_modules}
+  action: command drush dl -y --destination=/home/${username}/www/drupal/sites/all/modules ${drush_download_modules}
   ignore_errors: True
 
 - name: Drupal | Enable drupal modules
-  action: shell cd /home/${username}/www/drupal && drush en -y $drush_enable_modules
+  action: command cd /home/${username}/www/drupal && drush en -y ${drush_enable_modules}
