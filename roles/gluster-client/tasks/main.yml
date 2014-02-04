@@ -1,5 +1,7 @@
 ---
-- fail: 'Cannot add Gluster repo on non-Ubuntu yet'
+- debug: msg="ansible_distribution={{ansible_distribution}}"
+
+- fail: msg='Cannot add Gluster repo on non-Ubuntu yet'
   when: ansible_distribution != 'Ubuntu'
 
 - name: Add Gluster repo

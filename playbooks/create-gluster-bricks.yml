@@ -1,5 +1,7 @@
+# ansible-playbook create-gluster.yml -v -i hosts/dev --private-key=~/AeroFS/AWS-keys/chriskoansys.pem 
+
 - name: Create Gluster
-  hosts: all
+  hosts: gluster-bricks
   sudo: yes
   # vars:
   #   # should have redhat and size stuff here? or in group/host files?
