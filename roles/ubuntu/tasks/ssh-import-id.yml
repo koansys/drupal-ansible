@@ -1,0 +1,6 @@
+---
+- name: Add 'friends' ssh keys (to ubuntu user)
+  command: ssh-import-id {{item}}
+  with_items:
+    - shentonfreude
+    - joshfinnie
