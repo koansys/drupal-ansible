@@ -1,0 +1,2 @@
+# We only need ansible; let it pick the versions of its dependencies.
+ansible>=1.4.4

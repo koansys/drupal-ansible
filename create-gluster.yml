@@ -1,0 +1,11 @@
+- name: Gluster
+  hosts: all
+  sudo: yes
+  # vars:
+  #   # should have redhat and size stuff here? or in group/host files?
+  #   foo: bar
+  roles:
+    - gluster-brick
+  tasks:
+    - name: do nothing
+      debug: msg="HI MOM"
