@@ -3,22 +3,22 @@
 #
   - name: Drupal | Download drupal and place it in directory
     sudo: no
-    action: command drush dl -y drupal --drupal-project-rename=drupal --destination=/home/${username}/www/
+    action: command drush dl -y drupal --drupal-project-rename=drupal --destination=/home/{{ username }}/www/
 
   - name: Drupal | Create default setting.py file
-    action: template src=drupal-sites-default-settings-php.j2 dest=/home/${username}/www/drupal/sites/default/settings.php mode=0777 owner=${username} group=${username}
+    action: template src=drupal-sites-default-settings-php.j2 dest=/home/{{ username }}/www/drupal/sites/default/settings.php mode=0777 owner={{ username }} group={{ username }}
 
   - name: Drupal | Make sites/default writable for site-install
-    action: file path=/home/${username}/www/drupal/sites/default state=directory mode=0777
+    action: file path=/home/{{ username }}/www/drupal/sites/default state=directory mode=0777
 
   - name: Drupal | Create the files directory
-    action: file path=/home/${username}/www/drupal/sites/default/files state=directory mode=0777 owner=${username} group=${username}
+    action: file path=/home/{{ username }}/www/drupal/sites/default/files state=directory mode=0777 owner={{ username }} group={{ username }}
 
   # - name: Drupal | Get drush status
-  #   action: shell cd /home/${username}/www/drupal && drush status | grep Successful;
+  #   action: shell cd /home/{{ username }}/www/drupal && drush status | grep Successful;
   #   ignore_errors: True
   #   register: drush_status
 
   # - name: Drupal | Site Install
-  #   action: shell cd /home/${username}/www/drupal && drush -y --db-su=root --db-su-pw=$mysql_root_password --db-url=mysql://root:$mysql_root_password@127.0.0.1/drupal $drush_si_extra_args site-install
-  #   only_if: "${drush_status.rc} != 0"
+  #   action: shell cd /home/{{ username }}/www/drupal && drush -y --db-su=root --db-su-pw=$mysql_root_password --db-url=mysql://root:$mysql_root_password@127.0.0.1/drupal $drush_si_extra_args site-install
+  #   only_if: "{{ drush_status.rc }} != 0"

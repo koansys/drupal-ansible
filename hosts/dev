@@ -9,7 +9,21 @@ gluster_vol_path=/data/glusterfs/vol1/brick1
 gluster_fs_type=xfs
 
 [gluster-brick-1]
-ec2-54-209-236-5.compute-1.amazonaws.com
+ec2-107-20-89-160.compute-1.amazonaws.com ansible_ssh_user=ec2-user
+# us-east-1b
 
 [gluster-brick-2]
-ec2-54-236-231-87.compute-1.amazonaws.com
+ec2-50-17-108-87.compute-1.amazonaws.com  ansible_ssh_user=ec2-user
+# us-east-1d
+
+[gluster-clients:children]
+gluster-client-1
+#gluster-client-2
+
+[gluster-client-1]
+ec2-184-72-164-201.compute-1.amazonaws.com
+# us-east-1b m1.small, sg=gluster-brick-?, key=chris@koansys.com
+
+[gluster-client-1]
+#ec2-184-72-164-201.compute-1.amazonaws.com
+# us-east-1b m1.small, sg=gluster-brick-?, key=chris@koansys.com

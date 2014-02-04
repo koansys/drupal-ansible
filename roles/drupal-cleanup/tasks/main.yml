@@ -2,10 +2,10 @@
 # Drupal cleanup tasks
 #
 - name: Drupal Cleanup | Reset permissions on sites/default
-  action: file path=/home/${username}/www/drupal/sites/default state=directory mode=0755
+  action: file path=/home/{{ username }}/www/drupal/sites/default state=directory mode=0755
 
 - name: Drupal Cleanup | Reset permissions on sites/default/settings.php
-  action: file path=/home/${username}/www/drupal/sites/default/settings.php state=file  mode=0644
+  action: file path=/home/{{ username }}/www/drupal/sites/default/settings.php state=file  mode=0644
 
 - name: Drush Cleanup | Delete ~/.drush, maybe it is for a wrong user
   action: file path=~/.drush state=absent
@@ -15,8 +15,8 @@
 #
 
 - name: Drupal | Download drupal modules
-  action: shell drush dl -y --destination=/home/${username}/www/drupal/sites/all/modules ${drush_download_modules}
+  action: command drush dl -y --destination=/home/{{ username }}/www/drupal/sites/all/modules {{ drush_download_modules }}
   ignore_errors: True
 
 - name: Drupal | Enable drupal modules
-  action: shell cd /home/${username}/www/drupal && drush en -y $drush_enable_modules
+  action: command cd /home/{{ username }}/www/drupal && drush en -y {{ drush_enable_modules }}

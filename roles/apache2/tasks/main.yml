@@ -2,7 +2,7 @@
 # Apache2 install.
 #
 - name: Apache | Install
-  action: apt name=$item
+  action: apt name={{ item }}
   with_items:
     - apache2
 - name: Apache | Start service
@@ -27,10 +27,10 @@
 # Creating Website Directory
 #
 - name: Apache | Create website directory
-  action: file path=/home/${username}/www owner=${username} group=${username} state=directory mode=0775
+  action: file path=/home/{{ username }}/www owner={{ username }} group={{ username }} state=directory mode=0775
 
 - name: Apache | Add basic index.html
-  action: copy src=index.html dest=/home/${username}/www/index.html
+  action: copy src=index.html dest=/home/{{ username }}/www/index.html
 
 ##
 # Apache2 Restart
