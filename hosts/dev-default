@@ -1,0 +1,29 @@
+[gluster-bricks:children]
+gluster-brick-1
+gluster-brick-2
+
+[gluster-bricks:vars]
+ansible_ssh_user=ubuntu
+gluster_raw_device=/dev/xvdb
+gluster_vol_path=/data/glusterfs/vol1/brick1
+gluster_fs_type=xfs
+
+[gluster-brick-1]
+ec2-GLUSTER-BRICK-1.compute-1.amazonaws.com ansible_ssh_user=ec2-user
+# us-east-1b
+
+[gluster-brick-2]
+ec2-GLUSTER-BRICK-2.compute-1.amazonaws.com  ansible_ssh_user=ec2-user
+# us-east-1d
+
+[gluster-clients:children]
+gluster-client-1
+#gluster-client-2
+
+[gluster-client-1]
+ec2-GLUSTER-CLIENT-1.compute-1.amazonaws.com
+# us-east-1b m1.small, sg=gluster-brick-?
+
+[gluster-client-2]
+ec2-GLUSTER-CLIENT-2.compute-1.amazonaws.com
+# us-east-1b m1.small, sg=gluster-brick-?
