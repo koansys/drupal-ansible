@@ -1,1 +1,1 @@
-drush_download_modules: 'jquery_update'
+drush_download_modules: 'views features'
