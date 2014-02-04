@@ -2,7 +2,7 @@
 # PHP5 install.
 #
 - name: PHP5 | Install
-  action: apt name=$item
+  action: apt name={{ item }}
   with_items:
     - php5
     - php5-mysql
@@ -14,4 +14,4 @@
   notify:
     - start apache2  ## or - start nginx
 - name: PHP5 | Add info.php to the server's virtual host
-  action: copy src=info.php dest=/home/${username}/www/info.php
+  action: copy src=info.php dest=/home/{{ username }}/www/info.php
