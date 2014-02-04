@@ -10,5 +10,11 @@ Add new task:
     $ touch roles/TASK_NAME/tasks/main.yml
 
 To run:
+- creates Content Editors
+    $ ansible-playbook -i production bootstrap.yml -K
+    $ ansible-playbook -i production cleanup.yml -K
 
-    $ ansible-playbook -i stage bootstrap.yml -K
+- creates Content Editors
+    $ ansible-playbook -i production bootstrap.yml -K
+    $ ansible-playbook -i production cleanup.yml -K
+    $ ansible-playbook -i production readonly.yml -K
