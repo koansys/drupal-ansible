@@ -65,6 +65,3 @@ To run:
 Chris does things more complicated, specifying his key:
 
     $ ansible-playbook -v -i hosts/dev create-gluster.yml --private-key=~/AeroFS/AWS-keys/chriskoansys.pem
-    
-```js\n console.log('hello')\n```
-
