@@ -52,17 +52,19 @@ To run:
 
 * creates Content Editors
 
-        $ ansible-playbook -i hosts/production bootstrap.yml -K
-        $ ansible-playbook -i hosts/production cleanup.yml -K
+        $ ansible-playbook -i hosts/production drupal-bootstrap.yml -K
+        $ ansible-playbook -i hosts/production drupal-cleanup-and-module-installation.yml -K
 
 * creates Content Editors
 
-        $ ansible-playbook -i hosts/production bootstrap.yml -K
-        $ ansible-playbook -i hosts/production cleanup.yml -K
-        $ ansible-playbook -i hosts/production readonly.yml -K
+        $ ansible-playbook -i hosts/production drupal-bootstrap.yml -K
+        $ ansible-playbook -i hosts/production drupal-cleanup-and-module-installation.yml -K
+        $ ansible-playbook -i hosts/production drupal-readonly.yml -K
 
 
 Chris does things more complicated, specifying his key:
 
     $ ansible-playbook -v -i hosts/dev create-gluster.yml --private-key=~/AeroFS/AWS-keys/chriskoansys.pem
+    
+```js\n console.log('hello')\n```
 
