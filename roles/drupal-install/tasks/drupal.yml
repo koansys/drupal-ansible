@@ -1,9 +1,13 @@
 ##
 # Drupal install
 #
-  - name: Drupal | Download drupal and place it in directory
+
+  - name: Drupal | Copy Drush Makefile
+    action: copy src=drupal.make dest=/home/{{ username }}/drupal.make
+
+  - name: Drupal | Install Drupal & modules
     sudo: no
-    action: command drush dl -y drupal --drupal-project-rename=drupal --destination=/home/{{ username }}/www/
+    action: command drush make drupal.make /home/{{ username }}/www/drupal
 
   - name: Drupal | Create default setting.py file
     action: template src=drupal-sites-default-settings-php.j2 dest=/home/{{ username }}/www/drupal/sites/default/settings.php mode=0777 owner={{ username }} group={{ username }}
@@ -14,11 +18,19 @@
   - name: Drupal | Create the files directory
     action: file path=/home/{{ username }}/www/drupal/sites/default/files state=directory mode=0777 owner={{ username }} group={{ username }}
 
-  # - name: Drupal | Get drush status
-  #   action: shell cd /home/{{ username }}/www/drupal && drush status | grep Successful;
-  #   ignore_errors: True
-  #   register: drush_status
+#  This drops the database. Should be used only on initialization of website.
+#  - name: Drupal | Site Install
+#    action: command drush --root=/home/{{ username }}/www/drupal -y site-install standard --db-url=mysql://{{ db_username }}:{{ db_password }}@{{ db_host }}:{{ db_port }}/{{ db_name }} --site-name="Science.NASA.gov" --account-name=admin --account-pass=admin
+#    ignore_errors: yes
 
-  # - name: Drupal | Site Install
-  #   action: shell cd /home/{{ username }}/www/drupal && drush -y --db-su=root --db-su-pw=$mysql_root_password --db-url=mysql://root:$mysql_root_password@127.0.0.1/drupal $drush_si_extra_args site-install
-  #   only_if: "{{ drush_status.rc }} != 0"
+  - name: Drupal | Enable drupal modules
+    action: command drush --root=/home/{{ username }}/www/drupal en -y {{ drush_modules }}
+
+  - name: Drupal | Turning off Clean URLs
+    action: command drush --root=/home/{{ username }}/www/drupal vset clean_url 0
+
+  - name: Drupal Cleanup | Reset permissions on sites/default
+    action: file path=/home/{{ username }}/www/drupal/sites/default state=directory mode=0755
+
+  - name: Drupal Cleanup | Reset permissions on sites/default/settings.php
+    action: file path=/home/{{ username }}/www/drupal/sites/default/settings.php state=file  mode=0644
