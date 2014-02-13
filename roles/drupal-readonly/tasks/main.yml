@@ -2,11 +2,11 @@
 # Drupal Read Only module
 #
 - name: Drupal | Download drupal readonly module
-  action: command drush dl -y --destination=/home/{{ username }}/www/drupal/sites/all/modules readonly
+  action: command drush --root=/home/{{ username }}/www/drupal dl -y readonlymode
   ignore_errors: True
 
 - name: Drupal | Enable drupal readonly module
-  action: command cd /home/{{ username }}/www/drupal && drush en -y readonly
+  action: command drush --root=/home/{{ username }}/www/drupal en -y readonlymode
 
 - name: Drupal | Activate readonly module for "Read Only" module
-  action: command drush vset site_readonly 1
+  action: command drush --root=/home/{{ username }}/www/drupal vset site_readonly 1
