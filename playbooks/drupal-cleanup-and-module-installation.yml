@@ -1,9 +1,0 @@
-- hosts: webservers
-  user: ubuntu
-  sudo: yes
-
-  vars:
-    username: ubuntu
-
-  roles:
-    - drupal-cleanup
