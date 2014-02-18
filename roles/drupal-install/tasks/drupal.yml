@@ -50,3 +50,13 @@
 
   - name: Drupal Cleanup | Reset permissions on sites/default/settings.php
     action: file path=/home/{{ username }}/www/drupal/sites/default/settings.php state=file  mode=0644
+
+  - name: Drupal | Copying slide.ne to server
+    copy: src=slide.ne dest=/home/{{ username }}/slide.ne
+    tags:
+        - slide
+
+  - name: Drupal | Installing Slides node
+    command: drush --root={{ drupal_path }} ne-import -y --file=/home/{{ username }}/slide.ne
+    tags:
+        - slide
