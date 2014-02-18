@@ -1,0 +1,183 @@
+/* *********************************** 
+Sohail Aslam:
+  book navigation menu block styling.
+  The book navigation menu block is created by the book
+  module. The menu <u> have class="menu".
+*******************************************/
+#nav_local ul {
+        vertical-align: baseline;
+        outline: 0;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    padding: 0 15px 5px 40px;
+}
+
+#nav_local ul.menu, #nav_local ul.menu ul {
+        vertical-align: baseline;
+        outline: 0;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    list-style-type: none;
+    padding: 0;
+}
+
+/*#nav_local ul li { padding: 5px 15px 5px 25px; }*/
+
+#nav_local ul.menu li {
+        vertical-align: baseline;
+        outline: 0;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    display: block;
+    float: left;
+    width: 280px;
+    padding: 0;
+    font-weight: normal;
+}
+
+#nav_local ul.menu li a {
+    display: block;
+    background: url(../img/nav_local_bg_sprite.png) no-repeat;
+    background-position: 0 0;
+    width: 225px;
+    padding: 5px 15px 5px 40px;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+
+
+#nav_local ul.menu li a:hover {
+    text-decoration: underline;
+    background-position: -280px 0;
+}
+
+#nav_local ul.menu li a:visited {
+    font-weight: normal;
+}
+
+#nav_local ul.menu li.expand a {
+    background-position: -560px 0;
+}
+
+#nav_local ul.menu li.expand a:hover {
+    background-position: -840px 0;
+}
+
+
+
+#nav_local ul.menu li li a, #nav_local ul.menu li.expand li a  {
+    padding: 5px 10px 5px 60px;
+    width: 210px;
+    background-position: 0 0;
+}
+
+#nav_local ul.menu li li li a {
+    padding: 5px 10px 5px 80px;
+    width: 190px;
+    background-position: 0 0;
+}
+
+#nav_local ul.menu li.expanded li.expanded li a {
+    padding: 5px 10px 5px 80px;
+    width: 190px;
+    background-position: 0 0;
+}
+
+
+#nav_local ul.menu li.expanded a {
+    /*color: #5083ad;*/
+    background-position: -1120px 0;
+}
+
+#nav_local ul.menu li.expanded a:hover {
+    /*color: #5083ad;*/
+    background-position: -1400px 0;
+}
+
+#nav_local ul.menu li.expanded li a {
+    background-position: 0 0;
+}
+
+#nav_local ul.menu li.expanded li a:hover {
+    background-position: -280px 0;
+}
+
+#nav_local ul.menu li.expanded li.expand a {
+    background-position: -1680px 0;
+}
+
+#nav_local ul.menu li.expanded li.expand a:hover {
+    background-position: -1960px 0;
+}
+
+#nav_local ul.menu li.expanded li.expanded a {
+    background-position: -2240px 0;
+}
+
+#nav_local ul.menu li.expanded li.expanded a:hover {
+    background-position: -2520px 0;
+}
+
+#nav_local ul.menu li.expanded li.expanded li a {
+    background-position: 0 0;
+}
+
+#nav_local ul.menu li.expanded li.expanded li a:hover {
+    background-position: -280px 0;
+}
+
+#nav_local ul.menu li.selected >a {
+     /*color: #CC6633;*/
+     color: #5b96c6;
+     text-decoration: underline;
+     font-weight: bold;
+}
+#nav_local ul.menu li.selected > a:hover {
+     /*color: #CC6633;*/
+     color: #5b96c6;
+     text-decoration: underline;
+     font-weight: bold;
+}
+
+#nav_local .bottom  {
+    background: transparent url(../img/nav_local_bottom.gif) no-repeat left bottom;
+    height: 10px;
+    clear: both;
+}
+
+#nav_local ul.menu li.expanded li.expanded li.expanded li a {
+	padding: 5px 10px 5px 100px;
+	width: 170px;
+	background-position: 0pt 0pt;
+}
+
+#nav_local ul.menu li.expanded li.expanded li.expand a {
+	background-position: -2800px 0pt;
+}
+
+#nav_local ul.menu li.expanded li.expanded li.expand a:hover {
+	background-position: -3080px 0pt;
+	
+}
+
+#nav_local ul.menu li.expanded li.expanded li.expanded a {
+	/*background-position: -2800px 0pt;*/
+	background-position: -3360px 0pt;
+}
+
+#nav_local ul.menu li.expanded li.expanded li.expanded a:hover {
+	/*background-position: -3080px 0pt;*/
+	background-position: -3640px 0pt;
+}
+#nav_local ul.menu li.expanded li.expanded li.expanded li a {
+	background-position: 0pt 0pt;
+}
+#nav_local ul.menu li.expanded li.expanded li.expanded li a:hover {
+	background-position: -280px 0pt;
+}
+
+/**** END of book navigation menu block styling ****/

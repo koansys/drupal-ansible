@@ -1,0 +1,67 @@
+/**
+ * Implementation of hook_html_export_add_path_provider().
+ */
+function hook_html_export_add_path_provider() {
+  $items = array();
+  $items['machine_name'] = array(
+    'title' => 'Display name in select', // required
+    'callback' => 'callback_function', // required
+    'arg' => $variable, // optional argument to pass function
+  );
+  return $items;
+}
+
+TODO - check this signature hasn't changed.
+/**
+ * Implementation of hook_html_export_add_path_provider_alter().
+ */
+function hook_html_export_add_path_provider_alter(&$providers) {
+  // providers is a list of all path selection definitions
+}
+
+TODO - check this signature hasn't changed...
+/**
+ * Implementation of hook_html_export_asset_list_alter().
+ */
+function hook_html_export_asset_list_alter(&$asset_list) {
+  // providers is a list of all path selection definitions
+}
+
+TODO - check this signature hasn't changed...
+/**
+ * Implementation of hook_html_export_data_alter().
+ */
+function hook_html_export_data_alter(&$data, $paths, $active_path_count, $dom_remove) {
+  // data is the html of the page to work with
+}
+
+/**
+ * Implementation of hook_html_export_add_format().
+ */
+function hook_html_export_add_format() {
+  // array of keyed values containing format info
+  return array(
+    'none' => array( // machine name
+      'option' => 'Leave in files folder', // text to display in select dropdown
+      'text' => 'Click to access export', // text to display after processing
+      'path' => variable_get('file_' . file_default_scheme() . '_path',
+                             conf_path() . '/files'
+                            ) . '/html_export/%/index.html',
+       // link for the text after processing, % is replaced with active export
+       //directory
+    ),
+  );
+}
+
+TODO - check this signature hasn't changed...
+/**
+ * Implementation of hook_html_export_add_format_alter().
+ */
+function hook_html_export_add_format_alter(&$formats) {
+  // make changes to the $formats provided by other modules
+}
+
+There is also a global variable set when HTML publishing starts called
+$GLOBALS['html_export_active'] that can be used as other developers wish to
+know this batch is running. This is only valid with the masquerade publishing
+method.

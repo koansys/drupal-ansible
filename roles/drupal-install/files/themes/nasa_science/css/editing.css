@@ -1,0 +1,79 @@
+/* Override the insane white-space:nowrap value CKEditor's default skin uses, which breaks spacing in multiple places */
+.form-row .cke_skin_kama *, .cke_dialog_body * {
+    white-space: normal!important;
+}
+
+#MediaBrowser .yui-dt-paginator {
+    width: 90%;
+    margin: auto;
+    padding: inherit;
+    text-align: center;
+}
+
+#MediaBrowser a.yui-pg-page {
+    padding: 3px 6px;
+}
+
+#MediaBrowserControls {
+    margin: 0 auto;
+    margin-top: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+#MediaBrowserPreview {
+    width: 100%;
+    margin: auto;
+    padding: .3em;
+    overflow: auto;
+    font-size: smaller;
+}
+
+#MediaBrowserPreview img {
+    margin: 14px auto;
+    display: block;
+    border: solid #333333 1px;
+}
+
+/* Generic styles for the preview box */
+
+#MediaBrowser dt {
+    font-weight: bold;
+}
+
+#MediaBrowser dt:after {
+    content: ":";
+}
+
+#MediaBrowser dd {
+    margin-left: 2em;
+    white-space: normal;
+}
+
+#MediaBrowser h1 {
+    font-weight: bold;
+    text-align: center;
+}
+
+#MediaBrowser .yui-dt-liner {
+	padding: 2px;
+}
+
+#MediaBrowser .yui-dt-col-created .yui-dt-liner {
+	text-align: right;
+}
+
+#MediaBrowser .yui-dt-col-name .yui-dt-liner {
+	height: 1em;
+	white-space: nowrap;
+	overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Django Admin Tweaks */
+
+/* Suppress the "Text" label next to the rich text editor */
+
+.form-row label[for*=richtextcontent][for$=text] {
+    display: none;
+}

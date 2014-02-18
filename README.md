@@ -50,18 +50,19 @@ Run Playbook
 
 To run:
 
-* creates Content Editors
+* creates initial machine (and database)
 
-        $ ansible-playbook -i hosts/production drupal-bootstrap.yml -K
-        $ ansible-playbook -i hosts/production drupal-cleanup-and-module-installation.yml -K
+        $ ansible-playbook -i hosts/seed playbooks/drupal-bootstrap.yml -K
 
-* creates Content Editors
+* creates subsequent machines (when database already exists)
 
-        $ ansible-playbook -i hosts/production drupal-bootstrap.yml -K
-        $ ansible-playbook -i hosts/production drupal-cleanup-and-module-installation.yml -K
-        $ ansible-playbook -i hosts/production drupal-readonly.yml -K
+        $ ansible-playbook i hosts/production playbooks/drupal-bootstrap.yml --skip-tags "init" -K
 
+* creates read-only consumer boxes.
+
+        $ ansible-playbook i hosts/production playbooks/drupal-bootstrap.yml --skip-tags "init" -K
+        $ ansible-playbook -i hosts/production playbooks/drupal-readonly.yml -K
 
 Chris does things more complicated, specifying his key:
 
-    $ ansible-playbook -v -i hosts/dev create-gluster.yml --private-key=~/AeroFS/AWS-keys/chriskoansys.pem
+    $ ansible-playbook -v -i hosts/dev playbooks/create-gluster.yml --private-key=~/AeroFS/AWS-keys/chriskoansys.pem

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the nasascience_customization_feature feature.
+ */
+
+include_once 'nasascience_customization_feature.features.inc';

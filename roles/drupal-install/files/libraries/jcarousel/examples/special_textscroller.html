@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+<head>
+<title>jCarousel Examples</title>
+<link href="../style.css" rel="stylesheet" type="text/css" />
+<!--
+  jQuery library
+-->
+<script type="text/javascript" src="../lib/jquery-1.9.1.min.js"></script>
+<!--
+  jCarousel library
+-->
+<script type="text/javascript" src="../lib/jquery.jcarousel.min.js"></script>
+
+<!--
+  Custome styles
+-->
+<style type="text/css">
+
+.jcarousel-container-vertical {
+    width: 500px;
+    height: 400px;
+    background: #e8e8e8;
+    border: 1px solid #fff;
+}
+
+.jcarousel-clip-vertical {
+    top: 15px;
+    width: 490px;
+    height: 370px;
+    margin: 0 5px;
+    z-index: 20;
+    overflow: hidden;
+}
+
+#mycarousel li,
+.jcarousel-item-vertical,
+.jcarousel-item-placeholder-vertical {
+    width: 470px;
+    height: auto;
+    margin: 5px 0;
+}
+
+.jcarousel-item h3,
+.jcarousel-item p,
+.jcarousel-item pre {
+    margin: 0;
+    font-size: 90%;
+}
+
+.jcarousel-item pre {
+    margin: 5px 0;
+    padding: 5px;
+}
+
+.jcarousel-next-vertical {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 500px;
+    height: 14px;
+    cursor: pointer;
+    border-top: 1px solid #fff;
+    background: #4088b8 url(images/arrow-down.gif) no-repeat center;
+}
+
+.jcarousel-next-disabled-vertical {
+    cursor: default;
+    opacity: .5;
+    -moz-opacity: .5;
+    filter: alpha(opacity=50);
+}
+
+.jcarousel-prev-vertical {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 500px;
+    height: 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #fff;
+    background: #4088b8 url(images/arrow-up.gif) no-repeat center;
+}
+
+.jcarousel-prev-disabled-vertical {
+    cursor: default;
+    opacity: .5;
+    -moz-opacity: .5;
+    filter: alpha(opacity=50);
+}
+
+.loading {
+    background: transparent url(images/loading.gif) 50% 50% no-repeat;
+}
+
+</style>
+
+<script type="text/javascript">
+
+function mycarousel_initCallback(carousel, state)
+{
+    // Lock until all items are loaded. That prevents jCarousel from
+    // setup correctly and we have to do that in the ajax callback
+    // function with carousel.setup().
+    // We're doing that because we don't know the exact height of each
+    // items until they are added to the list.
+    carousel.lock();
+
+    jQuery.get(
+        'special_textscroller.php',
+        {},
+        function(xml) {
+            mycarousel_itemAddCallback(carousel, xml);
+        },
+        'xml'
+    );
+};
+
+function mycarousel_itemAddCallback(carousel, xml)
+{
+    var $items = jQuery('entry', xml);
+
+    $items.each(function(i) {
+        carousel.add(i + 1, mycarousel_getItemHTML(this));
+    });
+
+    carousel.size($items.size());
+
+    // Unlock and setup.
+    carousel.unlock();
+    carousel.setup();
+};
+
+/**
+ * Item html creation helper.
+ */
+function mycarousel_getItemHTML(item)
+{
+    return '<h3><a href="'+$('link', item).attr('href')+'">'+$('title', item).text()+'</a></h3>'+$('content', item).text();
+};
+
+jQuery(document).ready(function() {
+    /**
+     * We show a simple loading indicator
+     * using the jQuery ajax events
+     */
+    jQuery().ajaxStart(function() {
+        jQuery(".jcarousel-clip-vertical").addClass('loading');
+    });
+
+    jQuery().ajaxStop(function() {
+        jQuery(".jcarousel-clip-vertical").removeClass('loading');
+    });
+
+    jQuery('#mycarousel').jcarousel({
+        vertical: true,
+        scroll: 1,
+        size: 0,
+        initCallback: mycarousel_initCallback
+    });
+});
+
+</script>
+</head>
+<body>
+<div id="wrap">
+  <h1>jCarousel</h1>
+  <h2>Riding carousels with jQuery</h2>
+  <h3>Using jCarousel as Textscroller</h3>
+  <p>
+    This example shows how to use jCarousel as a Textscroller. The data is loaded from the Recent Commits Atom-Feed of the jCarousel master branch at GitHub.
+  </p>
+
+  <div id="mycarousel">
+    <ul>
+      <!-- The content will be dynamically loaded in here -->
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

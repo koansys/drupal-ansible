@@ -1,0 +1,317 @@
+@charset "UTF-8";
+
+                        /*:/+ossyyyyysso+/:.`
+                    .:+syyyyyyyyyysyyyyyyyyyys+:.                        ``
+                 -+syyyyyyyyyyyyyyyyyyyysyyyyyyyys+-                    -+`
+              `/syyyyyyyyyyyyyyysyyysyyyoyyyyyyyyyyys/`               .+o`
+            .+yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy+.           -+so`
+          `/yyyyyyyyyo++ooosyyyyyyyysyyyyyyyyyyyyyyyyyyyy/`      `:oss/`
+         -syyyyyyyys:syyyyyso+osyyyyyyyysyyyyyyyyyyyyyyyyys-  `-+osso-
+        /yyyyyyyyyy:yyyyyyoyyyys+oyyyyyyyyyyyyyyyyyyyyyyyyyy/+ossso:`
+       +yyyyyyyyyyy-yyyysysyyyyyyyo+syyyyyyyyyyyyyyyyyyyyysssssso/`
+      /yyyyyyyyyyyy-yyyyyyyyyyyyyyyyo+syyyyyyyyyyyyyyysssssssss:`
+     -yyyyyyyyyyyyy++yyyyyyyyyyyyyyyyyo+syyyyyyyyyssssssssssyyy:
+    `yyyyyyyyyyyyyyy-yyyyyyyyyyyyyyyyyyy++yyysssssssssyyssyyyyyy`
+    :yyyysooooyyysooo:yyyysosssyyyyyyyyso+:+ooossyyyyyoosyyyyyyy+
+    syyyyo    :yys`-y+/yyy-````-yyysss:``.-:..+yyyys/.```/yyyyyyy`
+   `yyyyyy     -yy :yy++yy`.    :ssss+   :oss/oyyyyo .    oyyyyyy.
+   .yyyyys /.   .s :yyyos:`o:    oyyys.    ./o:oyyy-.y.   .yyyyyy-
+   `yyyyys +y-   ` -sssso .//`   .yyyyy+:-+/-``-syo :+/    :yyyyy-
+    yyyyys /ys:    -yyyy-`-:++    :yysssoss:  `+/s..///:    +yyyy.
+    oyyyy+-:syy/----syy+-:y+/o-----oys/:---../oys-.:yyyo....-syyy`
+ `.-+yyyyyyyyyyyyyyyyyyyyyyys:oyyyyyyyyyyyyyyyyyys+yyyyyyyyyyyyy+
+.:-.`oyyyyyyyyyyyyyyyyyyyyyyyy+ooyyyyyyyyyyyyyyyyy/yyysyyoyyyyyy`
+     .yyyyyyyyyyyyyyyyyyyyyysyyo--+yyyyyyyyyyyyyyy+oyyyyysyyyyy:
+      -yyyyyyyyyyyyyyyysysyyyyyyy+-+yyyyyyyyyyyyyyooyyyyyyyyyy+
+       :yyyyyyysyyyysyyyyyyyyyyyyyyyyyyyyyyyyyysyy/yyysyyyyyy+
+        -syyyyyysyyysyyyysyyyyyyyyyyyyyyyyyysssso+syyyyoyyyy/
+         `+yyyyyyyyyyysyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyys-
+           -syyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy/`
+            -osyyyyyyyyoyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy/`
+          -/:` -oyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyys:`
+        `+-      `:oyyyyyyyyyyyyyyyyyyyyyyyyyyyyys/.
+                     ./osyyyyyyyyyyyyyyyyyyyyo/-`
+                         `.-//+ooossoo++/:-`*/
+
+
+/************************************************************************************************
+                      HOMEPAGE CUSTOM STYLE
+************************************************************************************************/
+
+a.external {
+    background: transparent url(../img/external_link_white.gif) no-repeat top right;
+}
+
+/*
+        GLOBAL NAV AREA
+************************************/
+
+/* force heights for correct layout in drupal */
+#header {
+    height: 81px;
+}
+#nav_global {
+    height: 154px;
+}
+#content_box {
+    /* height: 806px;*/
+}
+/* end of forced heights */
+
+#news_banner {
+    float: right;
+    width: 328px;
+    min-height: 100px;
+    padding: 0 15px 15px 0;
+    background: url(../img/nav_news_bg.gif) no-repeat;
+}
+
+#news_banner ol {
+    vertical-align: baseline;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    list-style-type: none;
+    display: block;
+    width: 303px;
+    padding: 0 10px 0 15px;
+    overflow:hidden;
+    list-style-position:inside;
+}
+
+#news_banner ol li {
+    vertical-align: baseline;
+    outline: 0;
+    margin: 0;
+    border: 0;
+    clear: both;
+    background: url(../img/bullet_news_square.gif) no-repeat 0 3px;
+    padding: 0px 0 0px 15px;
+    font-size: 0.7em;
+    line-height: 1.2em;
+    width: 288px;
+}
+
+#news_banner ol li a {
+    padding: 0;
+	padding-left: 0 !important;
+    background: none;
+    color: #fbfdce;
+    text-decoration: none;
+}
+
+#news_banner ol li a.external {
+    background: url(../img/external_link_white.gif) no-repeat right;
+    padding: 0 20px 0 0;
+}
+
+#news_banner ol li a:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+}
+
+#news_banner a.title {
+    display: block;
+    width: 100%;
+    height: 30px;
+    text-indent: -9999em;
+}
+
+#banner {
+    padding: 0 0 1px 15px;
+    width: 612px;
+    height: 70px;
+    float: left;
+}
+
+#banner div {
+    background: #000000;
+}
+
+*:first-child+html #nav_global #nav_secondary {
+    height: 34px;
+}
+
+#nav_global #nav_secondary {
+    width: 612px;
+    float: left;
+    margin: 0 0 0 15px;
+}
+
+#nav_global #nav_secondary li a {
+        padding: 8px 0px 8px 9px;
+}
+
+#nav_global #nav_secondary li.first a:hover {
+   padding: 8px 0px 8px 12px;
+   border-top: 1px solid #000000;
+}
+
+
+*:first-child+html #nav_global #nav_secondary li.first a:hover {
+   padding: 8px 13px 10px 12px;
+   border-top: 1px solid #000000;
+}
+
+
+
+
+/*
+        CONTENT AREA
+************************************/
+
+#content_box {
+    padding: 0 15px 0 15px;
+}
+
+#content {
+    width: 940px;
+    padding: 0 0 50px 0;
+    background: #000000 url(../img/content_bg_home.jpg) no-repeat 0 120px;
+}
+
+#content_box div.pod {
+    float: left;
+    width: 180px;
+    color: #FFFFFF;
+}
+
+#home_earth {
+    padding: 0 10px 15px 76px;
+}
+
+#home_heliophysics, 
+#home_planets {
+    padding: 0 9px 15px 13px;
+}
+
+#home_astrophysics {
+    padding: 0 10px 15px 13px;
+}
+
+#content_box div.pod p a {
+    display: block;
+    width: 130px;
+    height: 235px;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 20px 25px 15px 25px;
+    font-size: 1em;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+#content_box div.pod p a span {
+    display: block;
+    text-indent: -9999em;
+}
+
+#content_box div.pod p a strong {
+    display: block;
+    width: 100%;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0 0 40px 0;
+}
+
+#content_box div.pod p a:hover {
+    background-position: -180px 0;
+    text-indent: 0;
+}
+
+#content_box div.pod p a:hover span {
+    text-indent: 0;
+}
+
+#home_earth p a, 
+#home_heliophysics p a, 
+#home_planets p a, 
+#home_astrophysics p a { 
+    /*background: no-repeat 0 0 ; */
+}
+
+div.pod ul {
+    padding: 10px 0 10px 10px;
+    list-style-type: none;
+    letter-spacing: .01em;
+}
+
+div.pod ul li {
+    background: url(../img/bullet_home_square.gif) no-repeat 0 4px;
+    padding: 0 0 5px 10px;
+    font-size: 1em;
+    line-height: 1.2em;
+}
+
+div.pod ul a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+div.pod ul a:hover {
+    text-decoration: underline;
+}
+
+#home_boxes {
+    padding: 0 0 15px 11px;
+    background: url(../img/home_boxes_bottom.gif) no-repeat bottom;
+}
+
+#home_boxes div {
+    width: 284px;
+    min-height: 200px;
+    float: left;
+    padding: 0 15px 0 10px;
+    color: #CCCCCC;
+    background: #000000;
+    background: url(../img/home_boxes_bg.gif) no-repeat  0 0;
+}
+
+#home_boxes div h5 {
+    padding: 5px 0 15px 5px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+#home_boxes div img {
+    float: left;
+    padding: 0;
+    border: 1px solid #FFFFFF;
+    display: inline;
+}
+
+#home_boxes div p {
+    padding: 0 0 10px 160px;
+    font-size: .9em;
+}
+
+#home_boxes div p a {
+    color: #FFFFFF;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#home_boxes div p a:hover {
+    text-decoration: underline;
+}
+
+/*
+        FOOTER
+************************************/
+
+#footer {
+    /* FIXME: We need a background color for browsers w/o image loading: */
+    background: url(../img/footer_bg_home.jpg) no-repeat;
+    padding: 10px 30px 10px 30px;
+    font-size: .6em;
+    color: #FFFFFF;
+    /* Avoids the footer box not expanding to the height of its contents, which causes the background to be inconsistent */
+    overflow: hidden;
+}
+
+#footer_bottom {
+    height: 28px;
+    background: url(../img/footer_bottom_home.gif) no-repeat;
+}

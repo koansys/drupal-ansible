@@ -1,0 +1,30 @@
+<?php
+
+    /**
+     * @file
+     * Tests for the HTML Export module.
+     */
+
+    /**
+     * Base class for all administration menu web test cases.
+     */
+class HtmlExportWebTestCase extends DrupalWebTestCase {
+    protected $profile = 'testing';
+
+    protected $basePermissions = array(
+        'system' => 'access administration pages',
+        'admin_menu' => 'access administration menu',
+    );
+
+    function setUp() {
+        // Enable admin menu module and any other modules.
+        $modules = func_get_args();
+        $modules = isset($modules[0]) ? $modules[0] : $modules;
+        $modules[] = 'html_export';
+        parent::setUp($modules);
+
+        // Disable Clean URLs to ensure drupal.org testbot compatibility.
+        variable_set('clean_url', 0);
+    }
+
+}
