@@ -43,8 +43,23 @@
     tags:
         - enable_module
 
+  - name: Drupal | Enable custom modules
+    command: drush --root={{ drupal_path }} en -y nasascience_customization_feature
+
+  - name: Drupal | Revert custom modules
+    command: drush --root={{ drupal_path }} fr -y nasascience_customization_feature
+
+  - name: Drupal | Turn off Display Settings
+    command: drush --root={{ drupal_path }} vset -y node_submitted_{{ item }} 0
+    with_items: science_modules
+
+  - name: Drupal | Turning off Promote to Front Page
+    command: drush --root={{ drupal_path }} vset --format=json node_options_{{ item }} ['status']
+    #command: drush --root={{ drupal_path }} eval "variable_set( 'node_options_{{ item }}', array ( 0 => 'status', ) )"
+    with_items: science_modules
+
   - name: Drupal | Turning off Clean URLs
-    action: command drush --root=/home/{{ username }}/www/drupal vset clean_url 0
+    action: command drush --root={{ drupal_path }} vset clean_url 0
 
   - name: Drupal Cleanup | Reset permissions on sites/default
     action: file path=/home/{{ username }}/www/drupal/sites/default state=directory mode=0755
