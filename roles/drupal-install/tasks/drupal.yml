@@ -38,7 +38,8 @@
     command: drush --root=/home/{{ username }}/www/drupal vset -y theme_default nasa_science
 
   - name: Drupal | Enable drupal modules
-    action: command drush --root=/home/{{ username }}/www/drupal en -y {{ drush_modules }}
+    action: command drush --root=/home/{{ username }}/www/drupal en -y {{ item }}
+    with_items: drush_modules
     tags:
         - enable_module
 
