@@ -1,0 +1,16 @@
+name = HTML Export
+description = This allows you to export a Drupal site or parts of a site to HTML.
+core = 7.x
+project = html_export
+package = HTML Export
+files[] = html_export.test
+dependencies[] = simplehtmldom
+
+
+
+; Information added by drupal.org packaging script on 2013-09-30
+version = "7.x-2.x-dev"
+core = "7.x"
+project = "html_export"
+datestamp = "1380582219"
+

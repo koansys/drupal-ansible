@@ -1,0 +1,547 @@
+<?php
+
+/* Please see README.txt for copyright and contributor notices */
+
+define('HTML_EXPORT_PROCESS_LIMIT', 5);
+define('HTML_EXPORT_FILE_PROCESS_LIMIT', 2);
+
+
+/**
+ * Implements hook_help().
+ */
+function html_export_help($section) {
+  switch ($section) {
+    case 'admin':
+      return t("HTML Export lets you export drupal paths to static HTML.");
+  }
+}
+
+/**
+ * Implements hook_perms(). D6
+ */
+function html_export_perms() {
+  return array('use html export');
+}
+/**
+  * Implements hook_permissions for D7
+  */
+function html_export_permission() {
+  return array(
+    'use html export' => array(
+      'title' => t('Use html_export'),
+      'description' => t('Use html_export to export static html pages.'),
+    )
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function html_export_menu() {
+  $items = array();
+  $items['html_export'] = array(
+    'title' => 'HTML export',
+    'description' => 'Export paths to HTML files',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_html_export_job_page'),
+    'access arguments' => array('use html export'),
+    'file' => 'html_export.pages.inc',
+  );
+  $items['admin/config/html_export'] = array(
+    'title' => 'HTML export',
+    'description' => 'Configure how HTML is exported',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_html_export_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'html_export.admin.inc',
+  );
+  /*
+  $items['html_export/download'] = array(
+    'title' => 'Download html export',
+    'description' => 'Create a new feature.',
+    'page callback' => '_html_export_download_folder',
+    'page arguments' => array(2),
+    'access arguments' => array('use html export'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'html_export.pages.inc',
+    'weight' => 10,
+  );
+  */
+  //TODO - check what happens when you set up a 404 page. Does client stll get 404 error as well as the page?
+
+
+  return $items;
+}
+
+/**
+ * Implements hook_html_export_add_path_provider().
+ */
+function html_export_html_export_add_path_provider() {
+  $items = array(
+    'core_all_nodes' => array(
+      'title' => 'Core: All nodes',
+      'callback' => '_html_export_all_nodes',
+    ),
+    'core_all_paths' => array(
+      'title' => 'Core: all menu paths',
+      'callback' => '_html_export_all_menu_links',
+    ),
+  );
+  // create an option for each type
+  $avail_types = variable_get('html_export_available_types', array());
+  foreach ($avail_types as $key => $type) {
+    $items['types_' . $key] = array(
+      'title' => 'Node type: ' . $key,
+      'callback' => '_html_export_node_type',
+      'arg' => $key,
+    );
+  }
+  // if views is active then add in those paths
+  if (module_exists('views')) {
+    $avail_views = variable_get('html_export_available_views', array());
+    foreach ($avail_views as $view) {
+      $items['views_' . $view] = array(
+        'title' => 'Views: ' . $view,
+        'callback' => '_html_export_handle_view',
+        'arg' => $view,
+      );
+    }
+
+
+    //Also add an item for All Views
+    if (variable_get('html_export_all_views', FALSE)) {
+      $items['views_' . $view] = array(
+        'title' => 'All Views',
+        'callback' => '_html_export_handle_alls_views',
+        'arg' => $view,
+      );
+    }
+
+  }
+  return $items;
+}
+
+
+function _html_export_handle_alls_views() {
+
+}
+
+/**
+ * Callback for core_all_paths provider.
+ */
+function _html_export_handle_view($view_name) {
+  // Todo - currently only deals with simple paths
+
+  $paths = array();
+  $view = views_get_view($view_name);
+  $view->execute();
+  $items_per_page = $view->get_items_per_page();
+  $total_rows = $view->total_rows;
+  $url = $view->get_url();
+
+  // Add a list of urls for the pages to the paths
+  $paths[] = $url;
+  if ($items_per_page != 0) {
+    $no_pages = (int) $total_rows / (int) $items_per_page;
+  }
+  else {
+    $no_pages = 0;
+  }
+  for ($count=1; $count <= $no_pages; $count++) {
+    $path = $url . '?page=' . $count;
+    $paths[$path] = $path;
+  }
+
+  // We want all the items to list of nodes from a view
+  $view = null;
+  $view = views_get_view($view_name);
+  $view->set_items_per_page(0);
+  $view->execute();
+  foreach ($view->result as $row) {
+    if (isset($row->nid)) {
+      $path = 'node/' . $row->nid;
+      $paths[$path] = $path;
+    }
+  }
+
+  return $paths;
+}
+
+/**
+ * Callback for core_all_paths provider.
+ */
+function _html_export_all_menu_links() {
+  $paths = array();
+  $result = db_query("SELECT link_path FROM {menu_links}");
+  foreach ($result as $val) {
+    // ensure that % isn't taking context into account w/ the path
+    if (strpos($val->link_path, '%') === FALSE) {
+      $paths[$val->link_path] = $val->link_path;
+    }
+  }
+  return $paths;
+}
+
+/**
+ * Callback for core_all_nodes provider.
+ */
+function _html_export_all_nodes() {
+  $paths = array();
+  // grab all nodes the user has access to
+  $result = db_select('node', 'n')
+  ->fields('n', array('nid'))
+  ->addTag('node_access')
+  ->execute();
+  foreach ($result as $val) {
+    $paths['node/' . $val->nid] = 'node/' . $val->nid;
+  }
+  return $paths;
+}
+
+/**
+ * Callback for core_node_type provider.
+ */
+function _html_export_node_type($type) {
+  $paths = array();
+  // grab all nodes the user has access to for this type
+  $result = db_select('node', 'n')
+  ->fields('n', array('nid'))
+  ->condition('type', $type)
+  ->addTag('node_access')
+  ->execute();
+  foreach ($result as $val) {
+    $paths['node/' . $val->nid] = 'node/' . $val->nid;
+  }
+  return $paths;
+}
+
+/**
+ * Implements hook_html_export_data_alter().
+ *
+ * @param $required['paths']
+ * @param $required['active_path']
+ * @param $optional['dom_remove']
+ * @param $optional['remove_base']
+ *
+ */
+function html_export_html_export_data_alter(&$data, $required = array(), $optional = array()) {
+  global $base_url;
+
+  $paths = $required['paths'];
+  $active_path = $required['active_path'];
+  $dom_remove = isset($optional['dom_remove']) ? $optional['dom_remove'] : array();
+  $remove_base = isset($optional['remove_base']) ? $optional['remove_base'] :  TRUE; //Todo - shouldn't this be false by default
+  $replace_parameters = isset($optional['replace_parameters']) ? $optional['replace_parameters'] :  TRUE; // Todo - shouldn't this be false by default
+
+  // advanced dom removal routine
+  // Create a DOM object
+  $html_obj = new simple_html_dom();
+  // Load HTML from a string
+  $html_obj->load($data);
+  // remove the selectors
+  foreach ($dom_remove as $find) {
+    // find the selectors in the document
+    $objs = $html_obj->find($find);
+    // account for ability to find multiple objects
+    foreach ($objs as $obj) {
+      $obj->outertext = '';
+    }
+  }
+  // only remove base if told
+  if ($remove_base) {
+    // remove base_path so that everything is relative to root
+    $new_base = '';
+    // we need to retrace paths to account for nesting
+    $tmp = explode('/', $active_path);
+    foreach ($tmp as $dir) {
+      $new_base .= '../';
+    }
+  }
+  else {
+    $new_base = '/';
+    //Todo - remove base doesn't describe what we want properly. Sometimes we want http:/somplace.com/installdir/index.html to become /index.html, and other times to be index.html
+  }
+
+  $resources = array('link', 'img', 'script', 'a', 'object', 'style', 'comment');
+  // repair paths for these resources
+  foreach ($resources as $find) {
+    // find the selectors in the document
+    $objs = $html_obj->find($find);
+    // account for ability to find multiple objects
+    foreach ($objs as $obj) {
+
+//      if (isset($obj->href)) {
+//
+//        // account for internal href resources
+//        if ((strpos($obj->href, 'http://') === FALSE) && (strpos($obj->href, 'https://')) === FALSE) {
+//          // only replace first occurrence as this will be base path
+//          $pos = strpos($obj->href, base_path());
+//          if ($pos !== FALSE) {
+//            $obj->href = substr_replace($obj->href, $new_base, $pos, drupal_strlen(base_path()));
+//          }
+//        }
+//
+//        elseif (strpos($obj->href, $base_url) === 0) {
+//          $href = explode('?', str_replace($base_url, '', $obj->href));
+//          $pos = strpos($href[0], base_path());
+//          if ($pos !== FALSE) {
+//            $obj->href = substr_replace($href[0], $new_base, $pos, drupal_strlen(base_path()));
+//          }
+//        }
+//      }
+//      elseif (isset($obj->src)) {
+//
+//        // account for internal src resources
+//        if ((strpos($obj->src, 'http://') === FALSE) && (strpos($obj->src, 'https://') === FALSE)) {
+//          $pos = strpos($obj->src, base_path());
+//          if ($pos !== FALSE) {
+//            $obj->src = substr_replace($obj->src, $new_base, $pos, drupal_strlen(base_path()));
+//          }
+//        }
+//
+//        elseif (strpos($obj->src, $base_url) === 0) {
+//          $src = explode('?', str_replace($base_url, '', $obj->src));
+//          $pos = strpos($src[0], base_path());
+//          if ($pos !== FALSE) {
+//            $obj->src = substr_replace($src[0], $new_base, $pos, drupal_strlen(base_path()));
+//          }
+//        }
+//      }
+
+      // Deal with a href, which isn't a stylesheet
+      if (isset($obj->href) && isset($obj->rel) && (strcasecmp($obj->rel, 'stylesheet') !== 0 )) {
+        $obj->href =  _html_export_clean_link($obj->href, $new_base, $replace_parameters); //Todo - rewrite links from node/x to path
+      }
+
+      if (isset($obj->href) && !isset($obj->rel)    ) {
+        $obj->href =  _html_export_clean_link($obj->href, $new_base, $replace_parameters); //Todo - rewrite links from node/x to path
+      }
+
+      // Deal with img src
+      elseif (isset($obj->src)) {
+        $obj->src = _html_export_clean_link($obj->src, $new_base, $replace_parameters);
+      }
+
+      // Deal with stylesheets. Currently dealt with in the same way, but likely to change
+      elseif (isset($obj->href) && isset($obj->rel) && (strcasecmp($obj->rel, 'stylesheet') === 0 )) {
+        $obj->href = _html_export_clean_link($obj->href, $new_base, $replace_parameters);
+      }
+
+      // Deal with style @import for internet explorer - conditional comments.
+      elseif ($obj->tag == 'style' || $obj->tag == 'comment') {
+
+        $text = $obj->innertext;
+
+        /* There can be more than one in a style tag
+         Find  or  or similar. This is going to have problems with filenames with inverted commas or brackets in the filename.
+         All of these are valid:
+         @import url(http://www.style.org/pastoral);
+         @import url("bluish.css") projection, tv;
+         @import url(some.css) print, tv;
+         @import url "import4.css"; -- maybe. Not sure.
+         @import 'custom.css';
+         @import "common.css" screen, projection;
+         @import url('landscape.css') screen and (orientation:landscape);
+
+         The CSS spec (http://www.w3.org/TR/CSS1/#appendix-b) defines import as:
+         @import [STRING|URL] ';
+         STRING = \"({stringchar}|\')*\"|\'({stringchar}|\")*\'
+         Stringchar = {escape}|{latin1}|[ !#$%&(-~]
+         Not going to list escape or latin1
+         URL = url\({w}{string}{w}\) | url\({w}([^ \n\'\")]|\\\ |\\\'|\\\"|\\\))+{w}\)
+         {w} being whitespace.
+
+
+        */
+
+        $imports = array();
+        $replace = '';
+
+        // Todo - these preg_matches could be much better.
+        // Todo - IE conditional statements allow link to be in this too.
+        // Or if there's a css parser... possibly https://github.com/sabberworm/PHP-CSS-Parser (what's the licence?) or http://code.google.com/p/cssmin/ or
+        // or http://pear.php.net/package/HTML_CSS/ or http://www.phpclasses.org/package/1289-PHP-CSS-parser-class.html or http://www.oscarliang.net/projects/simple_cssparser.php. There are probably more.
+
+
+        if (preg_match_all('#@import\s+url\(["\']?([^"\';\)]+)["\']?\)[[:word:] ,]*;#im', $text, $imports)) {
+          foreach ($imports[1] as $key => $filepath) {
+            $replace = _html_export_clean_link($filepath, $new_base, $replace_parameters);
+            $text = str_replace($imports[1][$key], $replace, $text);
+          }
+
+        }
+        $imports = array();
+        if (preg_match_all('#@import\s+["\']([^"\';]+)["\'][[:word:] ,]*;#im', $text, $imports)) {
+          foreach ($imports[1] as $key => $filepath) {
+            $replace = _html_export_clean_link($filepath, $new_base, $replace_parameters);
+            $text = str_replace($imports[1][$key], $replace, $text);
+          }
+        }
+
+        $obj->innertext = $text;
+      }
+    }
+  }
+
+  // write all these changes back into the data string
+  $data = $html_obj->save();
+  // process all paths we were given to append .html
+  foreach ($paths as $path) {
+    // rewrite aliases to non-aliases
+    $alias = drupal_get_path_alias($path);
+    // seems odd but ensures that its not part of another string
+    // and is instead the end of a resource
+    //$data = str_replace($path . '"', $path . '/index.html"', $data);
+    //$data = str_replace($path . "'", $path . "/index.html'", $data);
+    //if ($alias != $path) {
+    //  $data = str_replace($alias . '"', $path . '/index.html"', $data);
+    //  $data = str_replace($alias . "'", $path . "/index.html'", $data);
+    //}
+  }
+  // clean up for potentially full paths goofed up
+  $data = str_replace('/index.html/', '/', $data);
+}
+
+
+function _html_export_clean_link($src, $new_base, $replace_parameters) {
+
+  // Todo - it's possible, but unlikely that we'll come up against a url which is in a file, which is a redirect.
+  // This function doesn't handle those. E.g. /some_base/?redirect=/some_base/new_place.html.
+  // It doesn't handle this case at the moment because typically the base is '/'.
+
+  //If it's local, but using the full url, then strip the http://www.something/
+  global $base_url;
+
+  // Is it a full URL?
+  if (stripos($src, 'http://') !== FALSE || stripos($src, 'https://') !== FALSE ) {
+
+    //If it is a full URL, then don't bother if it's not a local URL - i.e. starts with our local http
+    if (strpos($src, $base_url) !== 0) {
+      return $src;
+    }
+    else {
+      // It's local, so remove the http://etc
+      // http could be HTTP so ireplace. Possible error here if both http://HOME and http://home are valid but different urls but only one has Drupal.
+      $src = str_ireplace($base_url, '', $src);
+    }
+  }
+
+  // We have a local URL. Replace the base with an appropriate base
+  $src = substr_replace($src, $new_base, 0, drupal_strlen(base_path()));
+
+  //Check for parameters and alter if necessary
+  if ($replace_parameters) {
+      /* For now - only work on ?page=x.
+      $src = str_ireplace('?', '/', $src);
+      $src = str_ireplace('=', '/', $src);
+      $src = str_ireplace('&', '_', $src);
+      */
+      $src = preg_replace('#\?page=([[:digit:]])#', '/page/$1', $src);
+  }
+
+  return $src;
+}
+
+
+
+/**
+ * Helper function to pull in page data
+ */
+function _html_export_get_page_data($path, $export_options) {
+  //TODO - this is broken - it only works for anonymous users.
+  $data = FALSE;
+
+  if ($export_options['render_uid'] === 0) {
+    //uid zero is the anonymous user
+    $root = $_SERVER['HTTP_ORIGIN'] . base_path();
+    if (variable_get('clean_url', 0)) {
+      $http = drupal_http_request($root . $path);
+    }
+    else {
+      $http = drupal_http_request($root . 'index.php?q=' . $path);
+    }
+    // store http data object in variable for processing
+    $error_codes = array(403, 404, 500);
+    if ($export_options['render_errors']) {
+      $data = $http->data;
+    }
+    elseif (!in_array($http->code, $error_codes)) {
+      $data = $http->data;
+    }
+    else {
+      $data = FALSE;
+    }
+  }
+  /* This block of code is from D6.
+  else {
+    menu_set_active_item($path);
+    $menu_item = menu_get_item($path);
+    menu_set_item(NULL, $menu_item);
+    // squelch any and all messages at this time
+    $tmpmsg = drupal_get_messages();
+    // issue all calls by making things active
+    // get object to then be able to activate menu
+    $result = menu_execute_active_handler($path);
+    if (strpos($path, 'node') !== FALSE) {
+      $obj = menu_get_object('node', 1, $path);
+      if (isset($obj->book)) {
+        menu_tree_all_data($obj->book['menu_name'], $obj->book);
+      }
+      elseif (isset($obj->menu)) {
+        menu_tree_all_data($obj->menu['menu_name'], $obj->menu);
+      }
+    }
+    // render page
+    $data = theme('page', $result);
+  }
+  */
+  return $data;
+}
+
+/**
+ * Implements hook_html_export_add_format().
+ */
+function html_export_html_export_add_format() {
+
+  // Todo - it would be nice to have this as a plugin
+
+  return array(
+    'none' => array(
+      'option' => 'Leave in files folder',
+      'execute' => 'html_export_output_format_none'
+    ),
+    'tar_download' => array(
+      'option' => 'Tar export for download',
+      'module' => 'html_export',  //This is optional - the default is html_export
+      'path' => 'html_export/download/%',
+      'file' => 'html_export_output/html_export_output_tar',  //.inc gets added automatically to the name
+      'execute' => 'html_export_output_format_tar'
+    ),
+    'amazon_s3' => array(
+      'option' => 'Amazon S3',
+      'file' => 'html_export_output/html_export_output_amazon_s3',  //.inc gets added automatically to the name
+      'prepare' => 'html_export_output_format_prepare_amazon_s3',
+      'execute' => 'html_export_output_format_amazon_s3',
+      'cleanup' => 'html_export_output_format_cleanup_amazon_s3'
+    ),
+  );
+}
+
+
+function html_export_output_format_none ($export_options) {
+  $result = array();
+
+  $result['success'] = TRUE;
+
+  // pull out just the export folder location
+  $tmp = explode('/', $export_options['export_path']);
+  $export = array_pop($tmp);
+  $path = str_replace('%', $export, $export_options['export_path']);
+
+  // message with link
+  $result['message'] = l(t('Click to access export'), $export_options['export_path'], array('absolute' => TRUE, 'purl' => array('disabled' => TRUE)));
+
+  return $result;
+
+}
+

@@ -19,19 +19,60 @@
     action: file path=/home/{{ username }}/www/drupal/sites/default/files state=directory mode=0777 owner={{ username }} group={{ username }}
 
 #  This drops the database. Should be used only on initialization of website.
-  - name: Drupal | Site Install
-    action: command drush --root=/home/{{ username }}/www/drupal -y site-install standard --db-url=mysql://{{ db_username }}:{{ db_password }}@{{ db_host }}:{{ db_port }}/{{ db_name }} --site-name="Science.NASA.gov" --account-name=admin --account-pass=admin
-    ignore_errors: yes
-    tags: initialization
+#  - name: Drupal | Site Install
+#    action: command drush --root=/home/{{ username }}/www/drupal -y site-install standard --db-url=mysql://{{ db_username }}:{{ db_password }}@{{ db_host }}:{{ db_port }}/{{ db_name }} --site-name="Science.NASA.gov" --account-name=admin --account-pass=admin
+#    tags:
+#        - init
+
+  - name: Drupal | Add Libraries & Modules & Themes
+    synchronize: src=../roles/drupal-install/files/{{ item }} dest=/home/{{ username }}/www/drupal/sites/all/
+    with_items:
+        - libraries
+        - modules
+        - themes
+
+  - name: Drupal | Enable NASA Science theme
+    command: drush --root=/home/{{ username }}/www/drupal en -y nasa_science
+
+  - name: Drupal | Set NASA Science theme
+    command: drush --root=/home/{{ username }}/www/drupal vset -y theme_default nasa_science
 
   - name: Drupal | Enable drupal modules
-    action: command drush --root=/home/{{ username }}/www/drupal en -y {{ drush_modules }}
+    action: command drush --root=/home/{{ username }}/www/drupal en -y {{ item }}
+    with_items: drush_modules
+    tags:
+        - enable_module
+
+  - name: Drupal | Enable custom modules
+    command: drush --root={{ drupal_path }} en -y nasascience_customization_feature
+
+  - name: Drupal | Revert custom modules
+    command: drush --root={{ drupal_path }} fr -y nasascience_customization_feature
+
+  - name: Drupal | Turn off Display Settings
+    command: drush --root={{ drupal_path }} vset -y node_submitted_{{ item }} 0
+    with_items: science_modules
+
+  - name: Drupal | Turning off Promote to Front Page
+    command: drush --root={{ drupal_path }} vset --format=json node_options_{{ item }} ['status']
+    #command: drush --root={{ drupal_path }} eval "variable_set( 'node_options_{{ item }}', array ( 0 => 'status', ) )"
+    with_items: science_modules
 
   - name: Drupal | Turning off Clean URLs
-    action: command drush --root=/home/{{ username }}/www/drupal vset clean_url 0
+    action: command drush --root={{ drupal_path }} vset clean_url 0
 
   - name: Drupal Cleanup | Reset permissions on sites/default
     action: file path=/home/{{ username }}/www/drupal/sites/default state=directory mode=0755
 
   - name: Drupal Cleanup | Reset permissions on sites/default/settings.php
     action: file path=/home/{{ username }}/www/drupal/sites/default/settings.php state=file  mode=0644
+
+  - name: Drupal | Copying slide.ne to server
+    copy: src=slide.ne dest=/home/{{ username }}/slide.ne
+    tags:
+        - slide
+
+  - name: Drupal | Installing Slides node
+    command: drush --root={{ drupal_path }} ne-import -y --file=/home/{{ username }}/slide.ne
+    tags:
+        - slide

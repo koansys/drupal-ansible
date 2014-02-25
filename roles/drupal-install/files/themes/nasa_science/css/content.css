@@ -1,0 +1,111 @@
+/* Basic styles which could apply to almost anything */
+
+strong {
+    font-weight: bold;
+}
+
+em {
+    font-style: italic;
+}
+
+h1 {
+    font-size: 1.8em;
+    letter-spacing: 0.08em;
+}
+
+h2 {
+    font-size: 1.7em;
+    letter-spacing: 0.06em;
+}
+
+h3 {
+    font-size: 1.6em;
+    letter-spacing: 0.04em;
+}
+
+h4 {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #666;
+    letter-spacing: 0.08em;
+}
+
+h5 {
+    font-size: 1.2em;
+    font-weight: normal;
+}
+
+h6 {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.width_150 {
+    width: 150px;
+}
+
+.width_200 {
+    width: 200px;
+}
+
+.width_400 {
+    width: 400px;
+}
+
+.width_558 {
+    width: 558px;
+}
+
+.width_756 {
+    width: 758px;
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+.center > .right,
+.center > .left {
+    float: none;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.description {
+    text-align: justify;
+}
+
+.caption {
+    /*font-style: italic;*/
+    text-align: center;
+}
+
+/* Styles which are specific to the mediafile embeds created by our editor */
+
+div.mediafile, 
+blockquote.mediafile,
+blockquote.caption {
+    background-color: white;
+    border: solid #CCCCCC 1px;
+    color: #666666;
+    color: black;
+    font-size: 0.9em;
+    margin: 15px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.mediafile img {
+    border: 1px solid #CCCCCC;
+    display: block;
+    margin-bottom: 5px;
+    margin: auto;
+}
+
+.mediafile > div {
+    margin-top: .5em;
+}

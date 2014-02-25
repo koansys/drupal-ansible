@@ -1,0 +1,36 @@
+name = NASAScience
+description =  Drupal theme for science.nasa.gov
+core = "7.x"
+project = "nasa_science"
+engine = phptemplate
+
+; homepage-science-news-pod is only on the home page
+regions[homepage-science-news-pod] = Home Page Science News Pod
+
+regions[page_top] = Page top
+regions[header] = Header
+regions[highlight] = Highlight
+regions[help] = Help
+regions[content] = Content
+regions[left_sidebar_navigation] = Left sidebar navigation
+regions[left_sidebar_science_news_navigation] = Left sidebar science news navigation
+regions[left_sidebar_related] = Left sidebar related content
+regions[footer] = Footer
+regions[page_bottom] = Page bottom
+
+;stylesheets[all][] = css/main.css
+;stylesheets[all][] = css/content.css
+;stylesheets[all][] = css/custom.css
+stylesheets[print][] = css/print.css
+
+scripts[] = js/base.js
+scripts[] = js/federated-analytics.js
+;scripts[] = js/jquery.tablesorter.min.js
+scripts[] = js/swfobject.js
+;scripts[] = js/jquery.carouFredSel-6.2.0-packed.js
+scripts[] = js/home.js
+
+features[] = main_menu
+features[] = secondary_menu
+
+settings[clear_registry] = 1

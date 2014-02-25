@@ -1,0 +1,14 @@
+name = "HTML Export OG Integration"
+description = "This accounts for og in export routines if its available"
+core = 7.x
+project = "html_export"
+package = "HTML Export"
+dependencies[] = "og"
+dependencies[] = "html_export"
+
+; Information added by drupal.org packaging script on 2013-09-30
+version = "7.x-2.x-dev"
+core = "7.x"
+project = "html_export"
+datestamp = "1380582219"
+
