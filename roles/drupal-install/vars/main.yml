@@ -6,5 +6,5 @@ db_username: 'default'
 db_password: 'default'
 db_host: 'localhost'
 db_port: 3333
-db_prefix: 'main_'drush_modules : 'views'drush_modules : 'views'
+db_prefix: 'main_'
 drush_modules : 'views'
