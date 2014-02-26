@@ -25,7 +25,7 @@
 #        - init
 
   - name: Drupal | Add Libraries & Modules & Themes
-    synchronize: src=../roles/drupal-install/files/{{ item }} dest=/home/{{ username }}/www/drupal/sites/all/
+    copy: src=../roles/drupal-install/files/{{ item }} dest=/home/{{ username }}/www/drupal/sites/all/
     with_items:
         - libraries
         - modules
