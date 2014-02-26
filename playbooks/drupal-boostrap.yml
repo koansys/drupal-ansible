@@ -4,10 +4,11 @@
 
   vars:
     username: ubuntu
+    drupal_path: '/home/{{ username }}/www/drupal/'
 
   roles:
     - ubuntu
     - apache2
-    - mysql-server
+    - mysql
     - php5
     - drupal-install
