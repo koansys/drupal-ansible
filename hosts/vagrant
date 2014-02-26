@@ -1,0 +1,5 @@
+[webservers]
+127.0.0.1
+
+[webservers:vars]
+ansible_ssh_port=2222
