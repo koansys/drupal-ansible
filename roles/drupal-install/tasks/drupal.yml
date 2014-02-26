@@ -19,10 +19,10 @@
     action: file path=/home/{{ username }}/www/drupal/sites/default/files state=directory mode=0777 owner={{ username }} group={{ username }}
 
 #  This drops the database. Should be used only on initialization of website.
-#  - name: Drupal | Site Install
-#    action: command drush --root=/home/{{ username }}/www/drupal -y site-install standard --db-url=mysql://{{ db_username }}:{{ db_password }}@{{ db_host }}:{{ db_port }}/{{ db_name }} --site-name="Science.NASA.gov" --account-name=admin --account-pass=admin
-#    tags:
-#        - init
+  - name: Drupal | Site Install
+    action: command drush --root=/home/{{ username }}/www/drupal -y site-install standard --db-url=mysql://{{ db_username }}:{{ db_password }}@{{ db_host }}:{{ db_port }}/{{ db_name }} --site-name="Science.NASA.gov" --account-name=admin --account-pass=admin
+    tags:
+        - init
 
   - name: Drupal | Add Libraries & Modules & Themes
     copy: src=../roles/drupal-install/files/{{ item }} dest=/home/{{ username }}/www/drupal/sites/all/

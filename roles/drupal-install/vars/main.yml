@@ -1,10 +1,83 @@
 ##
 # Database Variables
 #
-db_name: 'default'
+db_name: 'drupal'
 db_username: 'default'
 db_password: 'default'
 db_host: 'localhost'
-db_port: 3333
+db_port: 3306
 db_prefix: 'main_'
-drush_modules : 'views'
+
+drush_modules:
+      - views_bulk_operations
+      - admin_menu
+      - adminimal_admin_menu
+      - amazons3
+      - awssdk
+      - backup_migrate
+      - block_class
+      - book_delete
+      - bookblock
+      - ckeditor
+      - computed_field
+      - content_menu
+      - context
+      - ctools
+      - date
+      - delete_all
+      - deploy
+      - devel
+      - diff
+      - ds
+      - entity
+      - entity_dependency
+      - entityreference
+      - entityreference_feeds
+      - eva
+      - features
+      - features_override
+      - feeds
+      - feeds_entityreference
+      - feeds_node_helper
+      - feeds_tamper
+      - feeds_tamper_string2id
+      - feeds_xpathparser
+      - file_entity
+      - formblock
+      - ftools
+      - hidden_nodes
+      - imce
+      - imce_mkdir
+      - job_scheduler
+      - jquery_update
+      - libraries
+      - lightbox2
+      - link
+      - linkit
+      - media
+      - menu_block
+      - menu_editor
+      - menu_item_visibility
+      - menu_position
+      - menu_token
+      - module_filter
+      - multiform
+      - node_export
+      - outline_designer
+      - overlay_paths
+      - panels
+      - path_alias_xt
+      - pathauto
+      - quickbar
+      - quicktabs
+      - semanticviews
+      - services
+      - taxonomy_csv
+      - taxonomy_menu
+      - token
+      - uuid
+      - views
+      - views_php
+      - views_slideshow
+      - views_slideshow_xtra
+      - views_tree
