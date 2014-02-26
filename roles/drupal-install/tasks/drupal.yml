@@ -55,7 +55,6 @@
 
   - name: Drupal | Turning off Promote to Front Page
     command: drush --root={{ drupal_path }} vset --format=json node_options_{{ item }} ['status']
-    #command: drush --root={{ drupal_path }} eval "variable_set( 'node_options_{{ item }}', array ( 0 => 'status', ) )"
     with_items: science_modules
 
   - name: Drupal | Turning off Clean URLs
