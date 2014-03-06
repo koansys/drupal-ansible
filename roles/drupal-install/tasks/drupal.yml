@@ -5,40 +5,68 @@
   - name: Drupal | Copy Drush Makefile
     action: copy src=drupal.make dest=/home/{{ username }}/drupal.make
 
+  - name: Drupal | Test if Drupal Exists
+    stat: path={{ drupal_path }}
+    register: drupalPath
+
   - name: Drupal | Install Drupal & modules
     sudo: no
-    action: command drush make drupal.make /home/{{ username }}/www/drupal
+    action: command drush make drupal.make {{ drupal_path }}
+    when: drupalPath.stat.exists == false
 
-  - name: Drupal | Create default setting.py file
-    action: template src=drupal-sites-default-settings-php.j2 dest=/home/{{ username }}/www/drupal/sites/default/settings.php mode=0777 owner={{ username }} group={{ username }}
+  - name: Drupal | Create science.nasa.gov site folder
+    file: path={{ drupal_path }}/sites/science.nasa.gov state=directory mode=0777
 
-  - name: Drupal | Make sites/default writable for site-install
-    action: file path=/home/{{ username }}/www/drupal/sites/default state=directory mode=0777
+  - name: Drupal | Create ciencia.nasa.gov site folder
+    file: path={{ drupal_path }}/sites/ciencia.nasa.gov state=directory mode=0777
 
-  - name: Drupal | Create the files directory
-    action: file path=/home/{{ username }}/www/drupal/sites/default/files state=directory mode=0777 owner={{ username }} group={{ username }}
+  - name: Drupal | Create science.nasa.gov setting.py file
+    action: template src=drupal/sites/science.nasa.gov/settings-php.j2 dest={{ drupal_path }}/sites/science.nasa.gov/settings.php mode=0777 owner={{ username }} group={{ username }}
+
+  - name: Drupal | Create ciencia.nasa.gov setting.py file
+    action: template src=drupal/sites/ciencia.nasa.gov/settings-php.j2 dest={{ drupal_path }}/sites/ciencia.nasa.gov/settings.php mode=0777 owner={{ username }} group={{ username }}
+
+  - name: Drupal | Create science.nasa.gov files directory
+    action: file path={{ drupal_path }}/sites/science.nasa.gov/files state=directory mode=0777 owner={{ username }} group={{ username }}
+
+  - name: Drupal | Create ciencia.nasa.gov files directory
+    action: file path={{ drupal_path }}/sites/ciencia.nasa.gov/files state=directory mode=0777 owner={{ username }} group={{ username }}
 
 #  This drops the database. Should be used only on initialization of website.
-#  - name: Drupal | Site Install
-#    action: command drush --root=/home/{{ username }}/www/drupal -y site-install standard --db-url=mysql://{{ db_username }}:{{ db_password }}@{{ db_host }}:{{ db_port }}/{{ db_name }} --site-name="Science.NASA.gov" --account-name=admin --account-pass=admin
-#    tags:
-#        - init
+  - name: Drupal | science@NASA Install
+    action: command drush --root={{ drupal_path }} -y site-install standard --db-url=mysql://{{ science_db_username }}:{{ science_db_password }}@{{ science_db_host }}:{{ science_db_port }}/{{ science_db_name }} --site-name="science@NASA" --account-name=admin --account-pass=admin --sites-subdir="science"
+    tags:
+        - init
 
-  - name: Drupal | Add Libraries & Modules & Themes
-    synchronize: src=../roles/drupal-install/files/{{ item }} dest=/home/{{ username }}/www/drupal/sites/all/
+#  This drops the database. Should be used only on initialization of website.
+  - name: Drupal | ciencia@NASA Install
+    action: command drush --root={{ drupal_path }} -y site-install standard --db-url=mysql://{{ ciencia_db_username }}:{{ ciencia_db_password }}@{{ ciencia_db_host }}:{{ ciencia_db_port }}/{{ ciencia_db_name }} --site-name="ciencia@NASA" --account-name=admin --account-pass=admin --sites-subdir="ciencia"
+    tags:
+        - init
+
+  - name: Drupal | Add Libraries & Modules
+    copy: src=../roles/drupal-install/files/{{ item }} dest={{ drupal_path }}/sites/all/
     with_items:
         - libraries
         - modules
-        - themes
+
+  - name: Drupal | Add science@NASA Theme
+    copy: src=../roles/drupal-install/files/science.nasa.gov/themes dest={{ drupal_path }}sites/science.nasa.gov/
+
+  - name: Drupal | Add ciencia@NASA Theme
+    copy: src=../roles/drupal-install/files/science.nasa.gov/themes dest={{ drupal_path }}sites/ciencia.nasa.gov/
 
   - name: Drupal | Enable NASA Science theme
-    command: drush --root=/home/{{ username }}/www/drupal en -y nasa_science
+    command: drush --root={{ drupal_path }} en -y nasa_science
 
-  - name: Drupal | Set NASA Science theme
-    command: drush --root=/home/{{ username }}/www/drupal vset -y theme_default nasa_science
+  - name: Drupal | Enable science@NASA theme
+    command: drush --root=/home/ubuntu/www/drupal -l localhost.science vset -y theme_default nasa_science
+
+  - name: Drupal | Enable ciencia@NASA theme
+    command: drush --root=/home/ubuntu/www/drupal -l localhost.ciencia vset -y theme_default nasa_ciencia
 
   - name: Drupal | Enable drupal modules
-    action: command drush --root=/home/{{ username }}/www/drupal en -y {{ item }}
+    action: command drush --root={{ drupal_path }} en -y {{ item }}
     with_items: drush_modules
     tags:
         - enable_module
@@ -55,24 +83,29 @@
 
   - name: Drupal | Turning off Promote to Front Page
     command: drush --root={{ drupal_path }} vset --format=json node_options_{{ item }} ['status']
-    #command: drush --root={{ drupal_path }} eval "variable_set( 'node_options_{{ item }}', array ( 0 => 'status', ) )"
     with_items: science_modules
 
   - name: Drupal | Turning off Clean URLs
     action: command drush --root={{ drupal_path }} vset clean_url 0
 
-  - name: Drupal Cleanup | Reset permissions on sites/default
-    action: file path=/home/{{ username }}/www/drupal/sites/default state=directory mode=0755
+  - name: Drupal Cleanup | Reset permissions for science@NASA's site
+    action: file path={{ drupal_path }}/sites/science state=directory mode=0755
 
-  - name: Drupal Cleanup | Reset permissions on sites/default/settings.php
-    action: file path=/home/{{ username }}/www/drupal/sites/default/settings.php state=file  mode=0644
+  - name: Drupal Cleanup | Reset permissions for science@NASA's settings file
+    action: file path={{ drupal_path }}/sites/science/settings.php state=file  mode=0644
+
+  - name: Drupal Cleanup | Reset permissions for ciencia@NASA's site
+    action: file path={{ drupal_path }}/sites/ciencia state=directory mode=0755
+
+  - name: Drupal Cleanup | Reset permissions for ciencia@NASA's settings file
+    action: file path={{ drupal_path }}/sites/ciencia/settings.php state=file  mode=0644
 
   - name: Drupal | Copying slide.ne to server
-    copy: src=slide.ne dest=/home/{{ username }}/slide.ne
+    copy: src=slide.ne dest={{ drupal_path }}slide.ne
     tags:
         - slide
 
   - name: Drupal | Installing Slides node
-    command: drush --root={{ drupal_path }} ne-import -y --file=/home/{{ username }}/slide.ne
+    command: drush --root={{ drupal_path }} ne-import -y --file={{ drupal_path }}slide.ne
     tags:
         - slide
