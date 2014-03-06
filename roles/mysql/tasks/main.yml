@@ -1,0 +1,19 @@
+##
+# MySQL Install
+#
+
+- name: MySQL | Install
+  apt: name={{ item }}
+  with_items:
+    - mysql-server
+    - libmysqlclient-dev
+    - python-mysqldb
+
+- name: MySQL | Create default user
+  mysql_user: name=default password=default priv=*.*:ALL state=present
+
+- name: delete anonymous MySQL server user for localhost
+  action: mysql_user user="" state="absent"
+
+- name: remove the MySQL test database
+  action: mysql_db db=test state=absent

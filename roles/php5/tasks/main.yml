@@ -10,8 +10,8 @@
     - php5-gd
     - libapache2-mod-php5
 - name: PHP | Configuration of php.ini
-  action: template src=etc-php5-apache2-php-ini.j2 dest=/etc/php5/apache2/php.ini
+  template: src=etc-php5-apache2-php-ini.j2 dest=/etc/php5/apache2/php.ini
   notify:
     - start apache2  ## or - start nginx
 - name: PHP5 | Add info.php to the server's virtual host
-  action: copy src=info.php dest=/home/{{ username }}/www/info.php
+  copy: src=info.php dest=/home/{{ username }}/www/info.php
