@@ -71,5 +71,9 @@ Using Vagrant
 -------------
 
 * Install Vagrant (v1.4.3 at current)
-* Install Vagrant-HostsUpdater plugin `vagrant plugin install vagrant-hostsupdater`
-* Startup Vagrant `vagrant up`
+* Install Vagrant-HostsUpdater plugin: `vagrant plugin install vagrant-hostsupdater`
+* Startup Vagrant: `vagrant up`
+
+Then run ansible to bootstrap drupal:
+
+  ansible-playbook -i hosts/vagrant -v playbooks/drupal-boostrap.yml -K
