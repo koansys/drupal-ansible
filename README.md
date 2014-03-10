@@ -66,3 +66,10 @@ To run:
 Chris does things more complicated, specifying his key:
 
     $ ansible-playbook -v -i hosts/dev playbooks/create-gluster.yml --private-key=~/AeroFS/AWS-keys/chriskoansys.pem
+
+Using Vagrant
+-------------
+
+* Install Vagrant (v1.4.3 at current)
+* Install Vagrant-HostsUpdater plugin `vagrant plugin install vagrant-hostsupdater`
+* Startup Vagrant `vagrant up`

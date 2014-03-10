@@ -212,12 +212,12 @@
  */
  $databases['default']['default'] = array(
    'driver' => 'mysql',
-   'database' => '{{ science_db_name }}',
-   'username' => '{{ science_db_username }}',
-   'password' => '{{ science_db_password }}',
-   'host' => '{{ science_db_host }}',
-   'port' => '{{ science_db_port }}',
-   'prefix' => '{{ science_db_prefix }}',
+   'database' => '{{ ciencia_db_name }}',
+   'username' => '{{ ciencia_db_username }}',
+   'password' => '{{ ciencia_db_password }}',
+   'host' => '{{ ciencia_db_host }}',
+   'port' => '{{ ciencia_db_port }}',
+   'prefix' => '{{ ciencia_db_prefix }}',
    'collation' => 'utf8_general_ci',
  );
 
@@ -349,8 +349,8 @@ ini_set('session.cookie_lifetime', 2000000);
  * - anonymous: Defines the human-readable name of anonymous users.
  * Remove the leading hash signs to enable.
  */
-$conf['site_name'] = 'science@NASA';
-$conf['theme_default'] = 'nasa_science';
+$conf['site_name'] = 'ciencia.nasa.dev';
+$conf['theme_default'] = 'bartik';
 # $conf['anonymous'] = 'Visitor';
 
 /**

@@ -1,20 +1,49 @@
 <VirtualHost *:80>
+
+    ServerName science.nasa.dev
+    ServerAlias science.nasa.gov
+
     ServerAdmin {{ apache_server_admin }}
 
-    VirtualDocumentRoot /home/{{ username }}/www
+    DocumentRoot /home/{{ username }}/www/science.nasa.dev/
 
     <Directory />
         Options FollowSymLinks
         AllowOverride None
     </Directory>
 
-    <Directory /home/{{ username }}/www/>
+    <Directory /home/{{ username }}/www/science.nasa.dev>
         Options Indexes FollowSymLinks MultiViews
         AllowOverride All
         Order allow,deny
         allow from all
     </Directory>
 
-    ErrorLog /var/log/apache2/error.log
+    ErrorLog /var/log/apache2/science.nasa.error.log
+
+</VirtualHost>
+
+<VirtualHost *:80>
+
+    ServerName ciencia.nasa.dev
+    ServerAlias ciencia.nasa.gov
+
+    ServerAdmin {{ apache_server_admin }}
+
+    DocumentRoot /home/{{ username }}/www/ciencia.nasa.dev/
+
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+    </Directory>
+
+    <Directory /home/{{ username }}/www/ciencia/ciencia.nasa.dev>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
+    </Directory>
+
+    ErrorLog /var/log/apache2/ciencia.nasa.error.log
 
 </VirtualHost>
