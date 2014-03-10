@@ -3,9 +3,11 @@
 #
 
   - name: Drupal | Copy Drush Makefile
+    sudo: no
     action: copy src=drupal.make dest=/home/{{ username }}/drupal.make
 
   - name: Drupal | Test if Drupal Exists
+    sudo: no
     stat: path={{ drupal_path }}
     register: drupalPath
 
@@ -14,106 +16,157 @@
     action: command drush make drupal.make {{ drupal_path }}
     when: drupalPath.stat.exists == false
 
+  # TODO: ensure these are not world-writable later
+
   - name: Drupal | Create science.nasa.dev.nasa.gov site folder
+    sudo: no
     file: path={{ drupal_path }}/sites/science.nasa.dev state=directory mode=0777
 
   - name: Drupal | Create ciencia.nasa.dev.nasa.gov site folder
+    sudo: no
     file: path={{ drupal_path }}/sites/ciencia.nasa.dev state=directory mode=0777
 
   - name: Drupal | Create science.nasa.dev.nasa.gov setting.py file
+    sudo: no
     action: template src=drupal/sites/science/settings-php.j2 dest={{ drupal_path }}/sites/science.nasa.dev/settings.php mode=0777 owner={{ username }} group={{ username }}
 
   - name: Drupal | Create ciencia.nasa.dev.nasa.gov setting.py file
+    sudo: no
     action: template src=drupal/sites/ciencia/settings-php.j2 dest={{ drupal_path }}/sites/ciencia.nasa.dev/settings.php mode=0777 owner={{ username }} group={{ username }}
 
   - name: Drupal | Create science.nasa.dev.nasa.gov files directory
+    sudo: no
     action: file path={{ drupal_path }}/sites/science.nasa.dev/files state=directory mode=0777 owner={{ username }} group={{ username }}
 
   - name: Drupal | Create ciencia.nasa.dev.nasa.gov files directory
+    sudo: no
     action: file path={{ drupal_path }}/sites/ciencia.nasa.dev/files state=directory mode=0777 owner={{ username }} group={{ username }}
 
 #  This drops the database. Should be used only on initialization of website.
   - name: Drupal | science.nasa.dev Install
+    sudo: no
     action: command drush --root={{ drupal_path }} -y site-install standard --db-url=mysql://{{ science_db_username }}:{{ science_db_password }}@{{ science_db_host }}:{{ science_db_port }}/{{ science_db_name }} --site-name="science.nasa.dev" --account-name=admin --account-pass=admin --sites-subdir=science.nasa.dev
     tags:
         - init
 
 #  This drops the database. Should be used only on initialization of website.
   - name: Drupal | ciencia.nasa.dev Install
+    sudo: no
     action: command drush --root={{ drupal_path }} -y site-install standard --db-url=mysql://{{ ciencia_db_username }}:{{ ciencia_db_password }}@{{ ciencia_db_host }}:{{ ciencia_db_port }}/{{ ciencia_db_name }} --site-name="ciencia.nasa.dev" --account-name=admin --account-pass=admin --sites-subdir=ciencia.nasa.dev
     tags:
         - init
 
-  - name: Drupal | Add Libraries & Modules
+  # This is repeated below the rsync, we should probably remove that
+  - name: Restore self-write to sites dirs that drush site-install removed
     sudo: no
-    local_action: >
-                command
-                rsync
-                -e 'ssh -p 2222'
-                -rvz
-                --rsync-path="sudo rsync"
-                ../roles/drupal-install/files/science/{{ item }}
-                $username@$inventory_hostname:$drupal_path/sites/science.nasa.dev/
+    file: path={{ drupal_path }}/sites/{{item}} state=directory mode=0755
+    with_items:
+      - science.nasa.dev
+      - ciencia.nasa.dev
+
+  # - name: Drupal | Add Libraries & Modules
+  #   sudo: no
+  #   local_action: >
+  #               command
+  #               rsync
+  #               -e 'ssh -p 2222'
+  #               -rvz
+  #               --rsync-path="sudo rsync"
+  #               ../roles/drupal-install/files/science/{{ item }}
+  #               $username@$inventory_hostname:$drupal_path/sites/science.nasa.dev/
+  #   with_items:
+  #       - libraries
+  #       - modules
+  #       - themes
+
+  # For vagrant on 127.0.0.1 [webservers] needs default ansible_ssh_host=127.0.0.1
+  - name: Drupal | Add Libraries, Modules & Tempaltes
+    synchronize: src=../roles/drupal-install/files/science/{{ item }} dest={{drupal_path}}/sites/science.nasa.dev/
+    sudo: no
     with_items:
         - libraries
         - modules
         - themes
+    tags: sync
 
 #  - name: Drupal | Add ciencia.nasa.dev Theme
 #    copy: src=../roles/drupal-install/files/ciencia.nasa.dev/themes dest={{ drupal_path }}sites/ciencia.nasa.dev/
 
   - name: Drupal | Enable science.nasa.dev theme
+    sudo: no
     command: drush --root={{ drupal_path }} en -y -l science.nasa.dev nasa_science
 
   - name: Drupal | Set science.nasa.dev theme
+    sudo: no
     command: drush --root=/home/ubuntu/www/drupal -l science.nasa.dev vset -y theme_default nasa_science
 
 #  - name: Drupal | Enable ciencia.nasa.dev theme
 #    command: drush --root=/home/ubuntu/www/drupal -l ciencia.nasa.dev vset -y theme_default nasa_ciencia
 
+  # drush en returns 0 (success) even if module missing; detect this failure
+
   - name: Drupal | Enable drupal modules
+    sudo: no
     action: command drush --root={{ drupal_path }} en -y -l science.nasa.dev {{ item }}
     with_items: drush_modules
+    register: result_all_modules
+    failed_when: "'was not found.' in result_all_modules.stderr"
+    tags: customization
 
   - name: Drupal | Enable custom modules
-    command: drush --root={{ drupal_path }} en -y -l science.nasa.dev nasa_customization_feature
+    sudo: no
+    command: drush --root={{ drupal_path }} en -y -l science.nasa.dev nasascience_customization_feature
+    register: result_customization
+    failed_when: "'was not found.' in result_customization.stderr"
+    tags: customization
 
 #  - name: Drupal | Revert custom modules
 #    command: drush --root={{ drupal_path }} fr -y -l science.nasa.dev nasa_customization_feature
 
   - name: Drupal | Turn off Display Settings
+    sudo: no
     command: drush --root={{ drupal_path }} vset -y -l science.nasa.dev node_submitted_{{ item }} 0
     with_items: science_modules
 
   - name: Drupal | Turning off Promote to Front Page
+    sudo: no
     command: drush --root={{ drupal_path }} vset --format=json -l science.nasa.dev node_options_{{ item }} ['status']
     with_items: science_modules
 
   - name: Drupal | Turning off Clean URLs
+    sudo: no
     action: command drush --root={{ drupal_path }} vset -l {{ item }} clean_url 0
     with_items:
         - science.nasa.dev
         - ciencia.nasa.dev
 
+  # TODO: do I need to be root for this?
+
   - name: Drupal Cleanup | Reset permissions for science.nasa.dev's site
+    sudo: no
     action: file path={{ drupal_path }}/sites/science.nasa.dev state=directory mode=0755
 
   - name: Drupal Cleanup | Reset permissions for science.nasa.dev's settings file
-    action: file path={{ drupal_path }}/sites/science.nasa.dev/settings.php state=file  mode=0644
+    sudo: no
+    action: file path={{ drupal_path }}/sites/science.nasa.dev/settings.php state=file  mode=0755
 
   - name: Drupal Cleanup | Reset permissions for ciencia.nasa.dev's site
+    sudo: no
     action: file path={{ drupal_path }}/sites/ciencia.nasa.dev state=directory mode=0755
 
   - name: Drupal Cleanup | Reset permissions for ciencia.nasa.dev's settings file
-    action: file path={{ drupal_path }}/sites/ciencia.nasa.dev/settings.php state=file  mode=0644
+    sudo: no
+    action: file path={{ drupal_path }}/sites/ciencia.nasa.dev/settings.php state=file  mode=0755
 
   - name: Drupal | Symlinking ciencia.nasa.dev
+    sudo: no
     file: src={{ drupal_path }} dest={{drupal_path}}/../{{ item }} state=link
     with_items:
         - science.nasa.dev
         - ciencia.nasa.dev
 
   - name: Drupal | Repair permissions
+    sudo: no
     command: drush --root={{ drupal_path }} -l {{ item }} php-eval 'node_access_rebuild();'
     with_items:
         - science.nasa.dev

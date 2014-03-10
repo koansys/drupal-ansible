@@ -1,5 +1,9 @@
+# Using 127.0.0.1 for the Vagrant target breaks synchronize module
+# so use this "default" work-around (why does this work?)
+
 [webservers]
-127.0.0.1
+default ansible_ssh_host=127.0.0.1
 
 [webservers:vars]
 ansible_ssh_port=2222
+
