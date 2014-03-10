@@ -90,7 +90,10 @@
     with_items: science_modules
 
   - name: Drupal | Turning off Clean URLs
-    action: command drush --root={{ drupal_path }} vset -l science.nasa.dev clean_url 0
+    action: command drush --root={{ drupal_path }} vset -l {{ item }} clean_url 0
+    with_items:
+        - science.nasa.dev
+        - ciencia.nasa.dev
 
   - name: Drupal Cleanup | Reset permissions for science.nasa.dev's site
     action: file path={{ drupal_path }}/sites/science.nasa.dev state=directory mode=0755
